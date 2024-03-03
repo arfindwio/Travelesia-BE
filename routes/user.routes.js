@@ -10,10 +10,10 @@ router.put("/verify-otp", verifyOtp);
 router.put("/resend-otp", resendOtp);
 router.post("/forget-password", forgetPasswordUser);
 router.put("/update-password", updatePasswordUser);
-router.get("/authenticate", Auth, checkRole(["user", "admin"]), authenticateUser);
-router.put("/change-password", Auth, checkRole(["user", "admin"]), changePasswordUser);
-router.get("/", Auth, checkRole(["admin"]), getAllUsers);
-router.delete("/:id", Auth, checkRole(["admin"]), deleteUserById);
+router.get("/authenticate", Auth, checkRole(["USER", "ADMIN"]), authenticateUser);
+router.put("/change-password", Auth, checkRole(["USER", "ADMIN"]), changePasswordUser);
+router.get("/", Auth, checkRole(["ADMIN"]), getAllUsers);
+router.delete("/:id", Auth, checkRole(["ADMIN"]), deleteUserById);
 
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 router.get(

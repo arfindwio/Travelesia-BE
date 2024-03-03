@@ -19,18 +19,19 @@ enum Role {
 }
 
 model User {
-  id                 Int          @id @default(autoincrement())
-  email              String       @unique
+  id                 Int            @id @default(autoincrement())
+  email              String         @unique
   password           String?
   otp                String?
   otpCreatedAt       DateTime?
-  isVerified         Boolean      @default(false)
-  role               Role         @default(USER)
+  isVerified         Boolean        @default(false)
+  role               Role           @default(USER)
   resetPasswordToken String?
   googleId           String?
   createdAt          String
   updatedAt          String
   userProfile        UserProfile?
+  notification       Notification[]
 }
 
 model UserProfile {
@@ -44,4 +45,15 @@ model UserProfile {
   updatedAt      String
   userId         Int     @unique
   user           User    @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id        Int     @id @default(autoincrement())
+  title     String
+  message   String
+  isRead    Boolean @default(false)
+  userId    Int
+  createdAt String
+  updatedAt String
+  user      User    @relation(fields: [userId], references: [id])
 }
