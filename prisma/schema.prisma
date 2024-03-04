@@ -8,9 +8,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -32,6 +31,7 @@ model User {
   updatedAt          String
   userProfile        UserProfile?
   notification       Notification[]
+  booking            Booking[]
 }
 
 model UserProfile {
@@ -56,4 +56,81 @@ model Notification {
   createdAt String
   updatedAt String
   user      User    @relation(fields: [userId], references: [id])
+}
+
+model Airport {
+  id          Int      @id @default(autoincrement())
+  airportName String
+  country     String
+  city        String
+  createdAt   String
+  updatedAt   String
+  departure   Flight[] @relation("DepartureFlight")
+  arrival     Flight[] @relation("ArrivalFlight")
+}
+
+model Flight {
+  id                  Int       @id @default(autoincrement())
+  flightCode          String
+  economyClassPrice   Int
+  premiumEconomyPrice Int
+  businessPrice       Int
+  firstClassPrice     Int
+  departureTime       String
+  arrivalTime         String
+  createdAt           String
+  updatedAt           String
+  seat                Seat[]
+  booking             Booking[]
+  airlineId           Int
+  airline             Airline   @relation(fields: [airlineId], references: [id])
+  departureAirportId  Int
+  departureAirport    Airport   @relation("DepartureFlight", fields: [departureAirportId], references: [id])
+  arrivalAirportId    Int
+  arrivalAirport      Airport   @relation("ArrivalFlight", fields: [arrivalAirportId], references: [id])
+}
+
+model Airline {
+  id           Int      @id @default(autoincrement())
+  airlineName  String
+  baggage      Int
+  cabinBaggage Int
+  createdAt    String
+  updatedAt    String
+  flight       Flight[]
+}
+
+model Seat {
+  id         Int    @id @default(autoincrement())
+  seatNumber String
+  createdAt  String
+  updatedAt  String
+  flightId   Int
+  flight     Flight @relation(fields: [flightId], references: [id])
+}
+
+model Passenger {
+  id               Int     @id @default(autoincrement())
+  name             String
+  bornDate         String
+  citizen          String
+  identityNumber   String
+  publisherCountry String
+  validUntil       String
+  createdAt        String
+  updatedAt        String
+  bookingId        Int
+  booking          Booking @relation(fields: [bookingId], references: [id])
+}
+
+model Booking {
+  id        Int         @id @default(autoincrement())
+  amount    Int
+  createdAt String
+  updatedAt String
+  userId    Int
+  user      User        @relation(fields: [userId], references: [id])
+  flightId  Int
+  flight    Flight      @relation(fields: [flightId], references: [id])
+  passenger Passenger[]
 }
