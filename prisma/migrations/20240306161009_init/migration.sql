@@ -61,7 +61,7 @@ CREATE TABLE "Airport" (
 -- CreateTable
 CREATE TABLE "Terminal" (
     "id" SERIAL NOT NULL,
-    "airportName" TEXT NOT NULL,
+    "terminalName" TEXT NOT NULL,
     "createdAt" TEXT NOT NULL,
     "updatedAt" TEXT NOT NULL,
     "airportId" INTEGER NOT NULL,
