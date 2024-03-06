@@ -59,35 +59,25 @@ model Notification {
 }
 
 model Airport {
-  id          Int      @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   airportName String
   country     String
   city        String
   createdAt   String
   updatedAt   String
-  departure   Flight[] @relation("DepartureFlight")
-  arrival     Flight[] @relation("ArrivalFlight")
+
+  terminal Terminal[]
 }
 
-model Flight {
-  id                  Int       @id @default(autoincrement())
-  flightCode          String
-  economyClassPrice   Int
-  premiumEconomyPrice Int
-  businessPrice       Int
-  firstClassPrice     Int
-  departureTime       String
-  arrivalTime         String
-  createdAt           String
-  updatedAt           String
-  seat                Seat[]
-  booking             Booking[]
-  airlineId           Int
-  airline             Airline   @relation(fields: [airlineId], references: [id])
-  departureAirportId  Int
-  departureAirport    Airport   @relation("DepartureFlight", fields: [departureAirportId], references: [id])
-  arrivalAirportId    Int
-  arrivalAirport      Airport   @relation("ArrivalFlight", fields: [arrivalAirportId], references: [id])
+model Terminal {
+  id          Int      @id @default(autoincrement())
+  airportName String
+  createdAt   String
+  updatedAt   String
+  airportId   Int
+  airport     Airport  @relation(fields: [airportId], references: [id])
+  departure   Flight[] @relation("DepartureFlight")
+  arrival     Flight[] @relation("ArrivalFlight")
 }
 
 model Airline {
@@ -98,6 +88,28 @@ model Airline {
   createdAt    String
   updatedAt    String
   flight       Flight[]
+}
+
+model Flight {
+  id                  Int       @id @default(autoincrement())
+  flightCode          String
+  flightImg           String
+  economyClassPrice   Int
+  premiumEconomyPrice Int
+  businessPrice       Int
+  firstClassPrice     Int
+  departureTime       String
+  arrivalTime         String
+  createdAt           String
+  updatedAt           String
+  airlineId           Int
+  airline             Airline   @relation(fields: [airlineId], references: [id])
+  departureId         Int
+  departureTerminal   Terminal  @relation("DepartureFlight", fields: [departureId], references: [id])
+  arrivalId           Int
+  arrivalTerminal     Terminal  @relation("ArrivalFlight", fields: [arrivalId], references: [id])
+  seat                Seat[]
+  booking             Booking[]
 }
 
 model Seat {
@@ -124,13 +136,14 @@ model Passenger {
 }
 
 model Booking {
-  id        Int         @id @default(autoincrement())
-  amount    Int
-  createdAt String
-  updatedAt String
-  userId    Int
-  user      User        @relation(fields: [userId], references: [id])
-  flightId  Int
-  flight    Flight      @relation(fields: [flightId], references: [id])
-  passenger Passenger[]
+  id          Int         @id @default(autoincrement())
+  bookingCode String
+  amount      Int
+  createdAt   String
+  updatedAt   String
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id])
+  flightId    Int
+  flight      Flight      @relation(fields: [flightId], references: [id])
+  passenger   Passenger[]
 }

@@ -33,6 +33,10 @@
     {
       "name": "Airlines",
       "description": "Operations about Airline"
+    },
+    {
+      "name": "Flights",
+      "description": "Operations about Flight"
     }
   ],
   "paths": {
@@ -2911,6 +2915,114 @@
           }
         }
       }
+    },
+    "/flights": {
+      "get": {
+        "tags": ["Flights"],
+        "operationId": "get-all-flights",
+        "summary": "Get all flights",
+        "description": "Get all flights",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "flights": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/FlightModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Flights"],
+        "operationId": "create-flight",
+        "summary": "Create flight",
+        "description": "Create flight",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreateFlight"
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "newFlight": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/FlightModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3119,6 +3231,56 @@
           "cabinBaggage": {
             "type": "integer",
             "example": 7
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          }
+        }
+      },
+      "FlightModel": {
+        "title": "Flight",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "flightCode": {
+            "type": "string",
+            "example": "JT-203"
+          },
+          "flightImg": {
+            "type": "string",
+            "example": "https://ik.imagekit.io/budi123/1628693262177_a8Y3AhxNv.png"
+          },
+          "economyClassPrice": {
+            "type": "integer",
+            "example": 200000
+          },
+          "premiumEconomyPrice": {
+            "type": "integer",
+            "example": 250000
+          },
+          "businessPrice": {
+            "type": "integer",
+            "example": 300000
+          },
+          "firstClassPrice": {
+            "type": "integer",
+            "example": 500000
+          },
+          "departureTime": {
+            "type": "string",
+            "example": "07:00 15 Februari 2024"
+          },
+          "arrivalTime": {
+            "type": "string",
+            "example": "11:00 15 Februari 2024"
           },
           "createdAt": {
             "type": "string",
@@ -3382,6 +3544,139 @@
                 "cabinBaggage": {
                   "type": "integer",
                   "example": 7
+                }
+              }
+            }
+          }
+        }
+      },
+      "EditAirline": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "airlineName": {
+                  "type": "string",
+                  "example": "Emirates"
+                },
+                "baggage": {
+                  "type": "integer",
+                  "example": 20
+                },
+                "cabinBaggage": {
+                  "type": "integer",
+                  "example": 7
+                }
+              }
+            }
+          }
+        }
+      },
+      "CreateFlight": {
+        "content": {
+          "multipart/form-data": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "flightCode": {
+                  "type": "string",
+                  "example": "JT-203"
+                },
+                "image": {
+                  "type": "string",
+                  "format": "binary"
+                },
+                "economyClassPrice": {
+                  "type": "integer",
+                  "example": 200000
+                },
+                "premiumEconomyPrice": {
+                  "type": "integer",
+                  "example": 250000
+                },
+                "businessPrice": {
+                  "type": "integer",
+                  "example": 300000
+                },
+                "firstClassPrice": {
+                  "type": "integer",
+                  "example": 500000
+                },
+                "departureTime": {
+                  "type": "string",
+                  "example": "07:00 15 Februari 2024"
+                },
+                "arrivalTime": {
+                  "type": "string",
+                  "example": "11:00 15 Februari 2024"
+                },
+                "airlineId": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "departureAirportId": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "arrivalAirportId": {
+                  "type": "integer",
+                  "example": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "EditFlight": {
+        "content": {
+          "multipart/form-data": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "flightCode": {
+                  "type": "string",
+                  "example": "JT-203"
+                },
+                "image": {
+                  "type": "string",
+                  "format": "binary"
+                },
+                "economyClassPrice": {
+                  "type": "integer",
+                  "example": 200000
+                },
+                "premiumEconomyPrice": {
+                  "type": "integer",
+                  "example": 250000
+                },
+                "businessPrice": {
+                  "type": "integer",
+                  "example": 300000
+                },
+                "firstClassPrice": {
+                  "type": "integer",
+                  "example": 500000
+                },
+                "departureTime": {
+                  "type": "string",
+                  "example": "07:00 15 Februari 2024"
+                },
+                "arrivalTime": {
+                  "type": "string",
+                  "example": "11:00 15 Februari 2024"
+                },
+                "airlineId": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "departureAirportId": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "arrivalAirportId": {
+                  "type": "integer",
+                  "example": 1
                 }
               }
             }

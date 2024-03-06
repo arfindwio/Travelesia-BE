@@ -57,7 +57,7 @@ module.exports = {
         where: { id: Number(airlineId) },
       });
 
-      if (!airline) throw new CustomError(404, "airport Not Found");
+      if (!airline) throw new CustomError(404, "airline Not Found");
 
       let editedAirline = await prisma.airline.update({
         where: {
