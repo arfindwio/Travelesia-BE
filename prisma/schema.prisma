@@ -59,25 +59,24 @@ model Notification {
 }
 
 model Airport {
-  id          Int    @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   airportName String
   country     String
   city        String
   createdAt   String
   updatedAt   String
-
-  terminal Terminal[]
+  terminal    Terminal[]
 }
 
 model Terminal {
-  id          Int      @id @default(autoincrement())
-  airportName String
-  createdAt   String
-  updatedAt   String
-  airportId   Int
-  airport     Airport  @relation(fields: [airportId], references: [id])
-  departure   Flight[] @relation("DepartureFlight")
-  arrival     Flight[] @relation("ArrivalFlight")
+  id           Int      @id @default(autoincrement())
+  terminalName String
+  createdAt    String
+  updatedAt    String
+  airportId    Int
+  airport      Airport  @relation(fields: [airportId], references: [id])
+  departure    Flight[] @relation("DepartureFlight")
+  arrival      Flight[] @relation("ArrivalFlight")
 }
 
 model Airline {
