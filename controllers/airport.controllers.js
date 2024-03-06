@@ -53,6 +53,12 @@ module.exports = {
 
       if (!airportName || !country || !city) throw new CustomError(400, "Please provide airportName, country, and city");
 
+      const airport = await prisma.airport.findUnique({
+        where: { id: Number(airportId) },
+      });
+
+      if (!airport) throw new CustomError(404, "airport Not Found");
+
       let editedAirport = await prisma.airport.update({
         where: {
           id: Number(airportId),
