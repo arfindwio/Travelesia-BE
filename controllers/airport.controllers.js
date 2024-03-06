@@ -6,6 +6,20 @@ const { CustomError } = require("../utils/errorHandler");
 const { formattedDate } = require("../utils/formattedDate");
 
 module.exports = {
+  getAllAirports: catchAsync(async (req, res, next) => {
+    try {
+      const airports = await prisma.airport.findMany();
+
+      res.status(200).json({
+        status: true,
+        message: "show all airports successful",
+        data: { airports },
+      });
+    } catch (err) {
+      next(err);
+    }
+  }),
+
   createAirport: catchAsync(async (req, res, next) => {
     try {
       const { airportName, country, city } = req.body;
@@ -26,20 +40,6 @@ module.exports = {
         status: true,
         message: "create airport successful",
         data: { newAirport },
-      });
-    } catch (err) {
-      next(err);
-    }
-  }),
-
-  getAllAirports: catchAsync(async (req, res, next) => {
-    try {
-      const airports = await prisma.airport.findMany();
-
-      res.status(200).json({
-        status: true,
-        message: "show all airports successful",
-        data: { airports },
       });
     } catch (err) {
       next(err);
