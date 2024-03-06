@@ -7,9 +7,6 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000/api/v1"
-    },
-    {
       "url": "http://localhost:8000/api/v1"
     }
   ],
@@ -29,6 +26,10 @@
     {
       "name": "Airports",
       "description": "Operations about Airport"
+    },
+    {
+      "name": "Terminals",
+      "description": "Operations about Terminal"
     },
     {
       "name": "Airlines",
@@ -2633,6 +2634,289 @@
         }
       }
     },
+    "/terminals": {
+      "get": {
+        "tags": ["Terminals"],
+        "operationId": "get-all-terminals",
+        "summary": "Get all terminals",
+        "description": "Get all terminals",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "terminals": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/TerminalModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Terminals"],
+        "operationId": "create-terminal",
+        "summary": "Create terminal",
+        "description": "Create terminal",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreateTerminal"
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "newTerminal": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/TerminalModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/terminals/{terminalId}": {
+      "put": {
+        "tags": ["Terminals"],
+        "operationId": "edit-terminal-by-id",
+        "summary": "Edit terminal by id",
+        "description": "Edit terminal by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "terminalId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the terminal to retrieve."
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/EditTerminal"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "editedTerminal": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/TerminalModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Terminals"],
+        "operationId": "delete-terminal-by-id",
+        "summary": "Delete terminal by id",
+        "description": "Delete terminal by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "terminalId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the terminal to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "deletedTerminal": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/TerminalModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/airlines": {
       "get": {
         "tags": ["Airlines"],
@@ -2743,7 +3027,7 @@
     },
     "/airlines/{airlinesId}": {
       "put": {
-        "tags": ["Airlines`"],
+        "tags": ["Airlines"],
         "operationId": "edit-airline-by-id",
         "summary": "Edit airline by id",
         "description": "Edit airline by id",
@@ -3212,6 +3496,28 @@
           }
         }
       },
+      "TerminalModel": {
+        "title": "Airport",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "terminalName": {
+            "type": "string",
+            "example": "Terminal 1A Domestik"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          }
+        }
+      },
       "AirlineModel": {
         "title": "Airline",
         "type": "object",
@@ -3527,6 +3833,44 @@
           }
         }
       },
+      "CreateTerminal": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "terminalName": {
+                  "type": "string",
+                  "example": "Terminal 1A Domestik"
+                },
+                "airportId": {
+                  "type": "integer",
+                  "example": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "EditTerminal": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "terminalName": {
+                  "type": "string",
+                  "example": "Terminal 1A Domestik"
+                },
+                "airportId": {
+                  "type": "integer",
+                  "example": 1
+                }
+              }
+            }
+          }
+        }
+      },
       "CreateAirline": {
         "content": {
           "application/json": {
@@ -3615,13 +3959,13 @@
                   "type": "integer",
                   "example": 1
                 },
-                "departureAirportId": {
+                "departureId": {
                   "type": "integer",
                   "example": 1
                 },
-                "arrivalAirportId": {
+                "arrivalId": {
                   "type": "integer",
-                  "example": 1
+                  "example": 2
                 }
               }
             }
@@ -3670,13 +4014,13 @@
                   "type": "integer",
                   "example": 1
                 },
-                "departureAirportId": {
+                "departureId": {
                   "type": "integer",
                   "example": 1
                 },
-                "arrivalAirportId": {
+                "arrivalId": {
                   "type": "integer",
-                  "example": 1
+                  "example": 2
                 }
               }
             }

@@ -29,7 +29,7 @@ module.exports = {
       let imageURL;
 
       if (!flightCode || !economyClassPrice || !premiumEconomyPrice || !businessPrice || !firstClassPrice || !departureTime || !arrivalTime || !airlineId || !departureId || !arrivalId)
-        throw new CustomError(400, "Please provide flightCode,flightImg,economyClassPrice,premiumEconomyPrice,businessPrice,firstClassPrice,departureTime, arrivalTime, airlineId, departureId, and arrivalId");
+        throw new CustomError(400, "Please provide flightCode, economyClassPrice, premiumEconomyPrice, businessPrice, firstClassPrice, departureTime, arrivalTime, airlineId, departureId, and arrivalId");
 
       let airline = await prisma.airline.findUnique({
         where: { id: Number(airlineId) },
