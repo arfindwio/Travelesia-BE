@@ -16,11 +16,23 @@
   "tags": [
     {
       "name": "Users",
-      "description": "Operations about user"
+      "description": "Operations about User"
     },
     {
       "name": "UserProfiles",
       "description": "Operations about UserProfile"
+    },
+    {
+      "name": "Notifications",
+      "description": "Operations about Notification"
+    },
+    {
+      "name": "Airports",
+      "description": "Operations about Airport"
+    },
+    {
+      "name": "Airlines",
+      "description": "Operations about Airline"
     }
   ],
   "paths": {
@@ -2333,6 +2345,572 @@
           }
         }
       }
+    },
+    "/airports": {
+      "get": {
+        "tags": ["Airports"],
+        "operationId": "get-all-airports",
+        "summary": "Get all airports",
+        "description": "Get all airports",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "airports": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/AirportModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Airports"],
+        "operationId": "create-airport",
+        "summary": "Create airport",
+        "description": "Create airport",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreateAirport"
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "newAirport": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/AirportModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/airports/{airportId}": {
+      "put": {
+        "tags": ["Airports"],
+        "operationId": "edit-airport-by-id",
+        "summary": "Edit airport by id",
+        "description": "Edit airport by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "airportId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the airport to retrieve."
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/EditAirport"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "editedAirport": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/AirportModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Airports"],
+        "operationId": "delete-airport-by-id",
+        "summary": "Delete airport by id",
+        "description": "Delete airport by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "airportId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the airport to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "deletedAirport": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/AirportModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/airlines": {
+      "get": {
+        "tags": ["Airlines"],
+        "operationId": "get-all-airlines",
+        "summary": "Get all airlines",
+        "description": "Get all airlines",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "airlines": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/AirlineModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Airlines"],
+        "operationId": "create-airline",
+        "summary": "Create airline",
+        "description": "Create airline",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreateAirline"
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "newAirline": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/AirlineModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/airlines/{airlinesId}": {
+      "put": {
+        "tags": ["Airlines`"],
+        "operationId": "edit-airline-by-id",
+        "summary": "Edit airline by id",
+        "description": "Edit airline by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "airlineId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the airline to retrieve."
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/EditAirline"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "editedAirline": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/AirlineModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Airlines"],
+        "operationId": "delete-airline-by-id",
+        "summary": "Delete airline by id",
+        "description": "Delete airline by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "airlineId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the airline to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "deletedAirline": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/AirlineModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2413,6 +2991,14 @@
           "googleId": {
             "type": "string",
             "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
           }
         }
       },
@@ -2444,9 +3030,13 @@
             "type": "string",
             "example": "Canada"
           },
-          "userId": {
-            "type": "integer",
-            "example": 1
+          "createdAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
           }
         }
       },
@@ -2472,11 +3062,71 @@
           },
           "createdAt": {
             "type": "string",
-            "example": "19 Desember 2023"
+            "example": "15 Februari 2024"
           },
-          "userId": {
+          "updatedAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          }
+        }
+      },
+      "AirportModel": {
+        "title": "Airport",
+        "type": "object",
+        "properties": {
+          "id": {
             "type": "integer",
             "example": 1
+          },
+          "airportName": {
+            "type": "string",
+            "example": "Narita International Airport"
+          },
+          "country": {
+            "type": "string",
+            "example": "Jepang"
+          },
+          "city": {
+            "type": "string",
+            "example": "Narita"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          }
+        }
+      },
+      "AirlineModel": {
+        "title": "Airline",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "airlineName": {
+            "type": "string",
+            "example": "Emirates"
+          },
+          "baggage": {
+            "type": "integer",
+            "example": 20
+          },
+          "cabinBaggage": {
+            "type": "integer",
+            "example": 7
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
           }
         }
       }
@@ -2663,6 +3313,75 @@
                 "message": {
                   "type": "string",
                   "example": "Password successfully updated!"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CreateAirport": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "airportName": {
+                  "type": "string",
+                  "example": "Narita International Airport"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "Jepang"
+                },
+                "city": {
+                  "type": "string",
+                  "example": "Narita"
+                }
+              }
+            }
+          }
+        }
+      },
+      "EditAirport": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "airportName": {
+                  "type": "string",
+                  "example": "Narita International Airport"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "Jepang"
+                },
+                "city": {
+                  "type": "string",
+                  "example": "Narita"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CreateAirline": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "airlineName": {
+                  "type": "string",
+                  "example": "Emirates"
+                },
+                "baggage": {
+                  "type": "integer",
+                  "example": 20
+                },
+                "cabinBaggage": {
+                  "type": "integer",
+                  "example": 7
                 }
               }
             }
