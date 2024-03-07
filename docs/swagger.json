@@ -38,6 +38,10 @@
     {
       "name": "Flights",
       "description": "Operations about Flight"
+    },
+    {
+      "name": "Seats",
+      "description": "Operations about Seat"
     }
   ],
   "paths": {
@@ -3482,6 +3486,304 @@
           }
         }
       }
+    },
+    "/seats": {
+      "post": {
+        "tags": ["Seats"],
+        "operationId": "create-many-seats",
+        "summary": "Create many seats",
+        "description": "Create many seats",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreateSeat"
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "newSeats": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/SeatModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/seats/{seatId}": {
+      "put": {
+        "tags": ["Seats"],
+        "operationId": "reserve-seat-by-id",
+        "summary": "reserve seat by id",
+        "description": "reserve seat by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "seatId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the seat to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "editedSeat": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/SeatModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/seats/{flightId}": {
+      "get": {
+        "tags": ["Seats"],
+        "operationId": "get-all-seats-by-flightId",
+        "summary": "get all seats by flightId",
+        "description": "get all seats by flightId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "flightId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the flight to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "seats": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/SeatModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Seats"],
+        "operationId": "delete-seat-by-flightId",
+        "summary": "delete seat by flightId",
+        "description": "delete seat by flightId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "flightId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the flight to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "deletedSeat": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/SeatModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3762,6 +4064,32 @@
           "arrivalTime": {
             "type": "string",
             "example": "11:00 15 Februari 2024"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          }
+        }
+      },
+      "SeatModel": {
+        "title": "Seat",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "seatNumnber": {
+            "type": "string",
+            "example": "A-1"
+          },
+          "isBooked": {
+            "type": "boolean",
+            "example": false
           },
           "createdAt": {
             "type": "string",
@@ -4196,6 +4524,25 @@
                 "arrivalId": {
                   "type": "integer",
                   "example": 2
+                }
+              }
+            }
+          }
+        }
+      },
+      "CreateSeat": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "totalRows": {
+                  "type": "integer",
+                  "example": 12
+                },
+                "flightId": {
+                  "type": "integer",
+                  "example": 1
                 }
               }
             }
