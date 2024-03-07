@@ -105,6 +105,7 @@ CREATE TABLE "Flight" (
 CREATE TABLE "Seat" (
     "id" SERIAL NOT NULL,
     "seatNumber" TEXT NOT NULL,
+    "isBooked" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TEXT NOT NULL,
     "updatedAt" TEXT NOT NULL,
     "flightId" INTEGER NOT NULL,
