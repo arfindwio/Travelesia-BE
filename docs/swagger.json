@@ -42,6 +42,10 @@
     {
       "name": "Seats",
       "description": "Operations about Seat"
+    },
+    {
+      "name": "Bookings",
+      "description": "Operations about Booking"
     }
   ],
   "paths": {
@@ -3784,6 +3788,274 @@
           }
         }
       }
+    },
+    "/bookings": {
+      "get": {
+        "tags": ["Bookings"],
+        "operationId": "get-all-bookings",
+        "summary": "Get all bookings",
+        "description": "Get all bookings",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "bookings": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/BookingModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/bookings/{flightId}": {
+      "post": {
+        "tags": ["Bookings"],
+        "operationId": "create-booking-by-flightId",
+        "summary": "create booking by flightId",
+        "description": "create booking by flightId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "flightId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the flight to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "newBooking": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/BookingModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Bookings"],
+        "operationId": "pay-booking-by-flightId",
+        "summary": "pay booking by flightId",
+        "description": "pay booking by flightId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "flightId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the flight to retrieve."
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/PayBooking"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "payBooking": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/BookingModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bookings/bookingHistory": {
+      "get": {
+        "tags": ["Bookings"],
+        "operationId": "get-all-bookings-by-auth",
+        "summary": "Get all bookings by auth",
+        "description": "Get all bookings by auth",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "bookings": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/BookingModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3910,6 +4182,10 @@
           "updatedAt": {
             "type": "string",
             "example": "15 Februari 2024"
+          },
+          "userId": {
+            "type": "integer",
+            "example": 1
           }
         }
       },
@@ -3940,6 +4216,10 @@
           "updatedAt": {
             "type": "string",
             "example": "15 Februari 2024"
+          },
+          "userId": {
+            "type": "integer",
+            "example": 1
           }
         }
       },
@@ -3992,6 +4272,10 @@
           "updatedAt": {
             "type": "string",
             "example": "15 Februari 2024"
+          },
+          "airportId": {
+            "type": "integer",
+            "example": 1
           }
         }
       },
@@ -4072,6 +4356,18 @@
           "updatedAt": {
             "type": "string",
             "example": "15 Februari 2024"
+          },
+          "airlineId": {
+            "type": "integer",
+            "example": 1
+          },
+          "departureId": {
+            "type": "integer",
+            "example": 1
+          },
+          "arrivalId": {
+            "type": "integer",
+            "example": 2
           }
         }
       },
@@ -4098,6 +4394,44 @@
           "updatedAt": {
             "type": "string",
             "example": "15 Februari 2024"
+          },
+          "flightId": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "BookingModel": {
+        "title": "Seat",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "bookingCode": {
+            "type": "string",
+            "example": "6723y2GHK"
+          },
+          "amount": {
+            "type": "integer",
+            "example": 800000
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "userId": {
+            "type": "integer",
+            "example": 1
+          },
+          "flightId": {
+            "type": "integer",
+            "example": 1
           }
         }
       }
@@ -4543,6 +4877,21 @@
                 "flightId": {
                   "type": "integer",
                   "example": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "PayBooking": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "methodPayment": {
+                  "type": "string",
+                  "example": "Credit Card"
                 }
               }
             }
