@@ -52,9 +52,9 @@ model Notification {
   title     String
   message   String
   isRead    Boolean @default(false)
-  userId    Int
   createdAt String
   updatedAt String
+  userId    Int
   user      User    @relation(fields: [userId], references: [id])
 }
 
@@ -121,6 +121,21 @@ model Seat {
   flight     Flight  @relation(fields: [flightId], references: [id])
 }
 
+model Booking {
+  id            Int         @id @default(autoincrement())
+  bookingCode   String
+  amount        Int
+  status        String      @default("Unpaid")
+  paymentMethod String?
+  createdAt     String
+  updatedAt     String
+  userId        Int
+  user          User        @relation(fields: [userId], references: [id])
+  flightId      Int
+  flight        Flight      @relation(fields: [flightId], references: [id])
+  passenger     Passenger[]
+}
+
 model Passenger {
   id               Int     @id @default(autoincrement())
   name             String
@@ -133,17 +148,4 @@ model Passenger {
   updatedAt        String
   bookingId        Int
   booking          Booking @relation(fields: [bookingId], references: [id])
-}
-
-model Booking {
-  id          Int         @id @default(autoincrement())
-  bookingCode String
-  amount      Int
-  createdAt   String
-  updatedAt   String
-  userId      Int
-  user        User        @relation(fields: [userId], references: [id])
-  flightId    Int
-  flight      Flight      @relation(fields: [flightId], references: [id])
-  passenger   Passenger[]
 }
