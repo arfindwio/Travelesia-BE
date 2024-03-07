@@ -111,7 +111,7 @@ module.exports = {
 
       const deletedSeats = await prisma.seat.deleteMany({
         where: {
-          id: Number(flightId),
+          flightId: Number(flightId),
         },
       });
 
