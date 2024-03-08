@@ -39,9 +39,9 @@ CREATE TABLE "Notification" (
     "title" TEXT NOT NULL,
     "message" TEXT NOT NULL,
     "isRead" BOOLEAN NOT NULL DEFAULT false,
-    "userId" INTEGER NOT NULL,
     "createdAt" TEXT NOT NULL,
     "updatedAt" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
 
     CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
 );
@@ -50,6 +50,7 @@ CREATE TABLE "Notification" (
 CREATE TABLE "Airport" (
     "id" SERIAL NOT NULL,
     "airportName" TEXT NOT NULL,
+    "continent" TEXT NOT NULL,
     "country" TEXT NOT NULL,
     "city" TEXT NOT NULL,
     "createdAt" TEXT NOT NULL,
@@ -86,10 +87,8 @@ CREATE TABLE "Flight" (
     "id" SERIAL NOT NULL,
     "flightCode" TEXT NOT NULL,
     "flightImg" TEXT NOT NULL,
-    "economyClassPrice" INTEGER NOT NULL,
-    "premiumEconomyPrice" INTEGER NOT NULL,
-    "businessPrice" INTEGER NOT NULL,
-    "firstClassPrice" INTEGER NOT NULL,
+    "seatClass" TEXT NOT NULL,
+    "price" INTEGER NOT NULL,
     "departureTime" TEXT NOT NULL,
     "arrivalTime" TEXT NOT NULL,
     "createdAt" TEXT NOT NULL,
@@ -114,6 +113,21 @@ CREATE TABLE "Seat" (
 );
 
 -- CreateTable
+CREATE TABLE "Booking" (
+    "id" SERIAL NOT NULL,
+    "bookingCode" TEXT NOT NULL,
+    "amount" INTEGER NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'Unpaid',
+    "paymentMethod" TEXT,
+    "createdAt" TEXT NOT NULL,
+    "updatedAt" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "flightId" INTEGER NOT NULL,
+
+    CONSTRAINT "Booking_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Passenger" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
@@ -127,19 +141,6 @@ CREATE TABLE "Passenger" (
     "bookingId" INTEGER NOT NULL,
 
     CONSTRAINT "Passenger_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Booking" (
-    "id" SERIAL NOT NULL,
-    "bookingCode" TEXT NOT NULL,
-    "amount" INTEGER NOT NULL,
-    "createdAt" TEXT NOT NULL,
-    "updatedAt" TEXT NOT NULL,
-    "userId" INTEGER NOT NULL,
-    "flightId" INTEGER NOT NULL,
-
-    CONSTRAINT "Booking_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -173,10 +174,10 @@ ALTER TABLE "Flight" ADD CONSTRAINT "Flight_arrivalId_fkey" FOREIGN KEY ("arriva
 ALTER TABLE "Seat" ADD CONSTRAINT "Seat_flightId_fkey" FOREIGN KEY ("flightId") REFERENCES "Flight"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Passenger" ADD CONSTRAINT "Passenger_bookingId_fkey" FOREIGN KEY ("bookingId") REFERENCES "Booking"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Booking" ADD CONSTRAINT "Booking_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Booking" ADD CONSTRAINT "Booking_flightId_fkey" FOREIGN KEY ("flightId") REFERENCES "Flight"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Passenger" ADD CONSTRAINT "Passenger_bookingId_fkey" FOREIGN KEY ("bookingId") REFERENCES "Booking"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

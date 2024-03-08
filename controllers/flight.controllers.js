@@ -24,12 +24,12 @@ module.exports = {
 
   createFlight: catchAsync(async (req, res, next) => {
     try {
-      const { flightCode, economyClassPrice, premiumEconomyPrice, businessPrice, firstClassPrice, departureTime, arrivalTime, airlineId, departureId, arrivalId } = req.body;
+      const { flightCode, seatClass, price, departureTime, arrivalTime, airlineId, departureId, arrivalId } = req.body;
       const file = req.file;
       let imageURL;
 
-      if (!flightCode || !economyClassPrice || !premiumEconomyPrice || !businessPrice || !firstClassPrice || !departureTime || !arrivalTime || !airlineId || !departureId || !arrivalId)
-        throw new CustomError(400, "Please provide flightCode, economyClassPrice, premiumEconomyPrice, businessPrice, firstClassPrice, departureTime, arrivalTime, airlineId, departureId, and arrivalId");
+      if (!flightCode || !seatClass || !price || !departureTime || !arrivalTime || !airlineId || !departureId || !arrivalId)
+        throw new CustomError(400, "Please provide flightCode, seatClass, price, departureTime, arrivalTime, airlineId, departureId, and arrivalId");
 
       let airline = await prisma.airline.findUnique({
         where: { id: Number(airlineId) },
@@ -66,10 +66,7 @@ module.exports = {
         data: {
           ...req.body,
           flightImg: imageURL,
-          economyClassPrice: parseInt(economyClassPrice),
-          premiumEconomyPrice: parseInt(premiumEconomyPrice),
-          businessPrice: parseInt(businessPrice),
-          firstClassPrice: parseInt(firstClassPrice),
+          price: parseInt(price),
           airlineId: Number(airlineId),
           departureId: Number(departureId),
           arrivalId: Number(arrivalId),
@@ -91,12 +88,12 @@ module.exports = {
   editFlight: catchAsync(async (req, res, next) => {
     try {
       const { flightId } = req.params;
-      const { flightCode, economyClassPrice, premiumEconomyPrice, businessPrice, firstClassPrice, departureTime, arrivalTime, airlineId, departureId, arrivalId } = req.body;
+      const { flightCode, seatClass, price, departureTime, arrivalTime, airlineId, departureId, arrivalId } = req.body;
       const file = req.file;
       let imageURL;
 
-      if (!flightCode || !economyClassPrice || !premiumEconomyPrice || !businessPrice || !firstClassPrice || !departureTime || !arrivalTime || !airlineId || !departureId || !arrivalId)
-        throw new CustomError(400, "Please provide flightCode,flightImg,economyClassPrice,premiumEconomyPrice,businessPrice,firstClassPrice,departureTime, arrivalTime, airlineId, departureId, and arrivalId");
+      if (!flightCode || !seatClass || !price || !departureTime || !arrivalTime || !airlineId || !departureId || !arrivalId)
+        throw new CustomError(400, "Please provide flightCode, seatClass, price,departureTime, arrivalTime, airlineId, departureId, and arrivalId");
 
       const flight = await prisma.flight.findUnique({
         where: { id: Number(flightId) },
@@ -140,11 +137,8 @@ module.exports = {
         data: {
           flightCode,
           flightImg: imageURL,
-          economyClassPrice: parseInt(economyClassPrice),
-          premiumEconomyPrice: parseInt(premiumEconomyPrice),
-          businessPrice: parseInt(businessPrice),
-          firstClassPrice: parseInt(firstClassPrice),
-          departureTime,
+          seatClass,
+          price: parseInt(price),
           arrivalTime,
           airlineId: Number(airlineId),
           departureId: Number(departureId),
