@@ -3835,7 +3835,6 @@
         }
       }
     },
-
     "/bookings/{flightId}": {
       "post": {
         "tags": ["Bookings"],
@@ -3858,6 +3857,9 @@
             "description": "The ID of the flight to retrieve."
           }
         ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreateBooking"
+        },
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -4235,6 +4237,10 @@
             "type": "string",
             "example": "Narita International Airport"
           },
+          "continent": {
+            "type": "string",
+            "example": "Asia"
+          },
           "country": {
             "type": "string",
             "example": "Jepang"
@@ -4325,21 +4331,13 @@
             "type": "string",
             "example": "https://ik.imagekit.io/budi123/1628693262177_a8Y3AhxNv.png"
           },
-          "economyClassPrice": {
-            "type": "integer",
-            "example": 200000
+          "seatClass": {
+            "type": "string",
+            "example": "Economy"
           },
-          "premiumEconomyPrice": {
+          "price": {
             "type": "integer",
             "example": 250000
-          },
-          "businessPrice": {
-            "type": "integer",
-            "example": 300000
-          },
-          "firstClassPrice": {
-            "type": "integer",
-            "example": 500000
           },
           "departureTime": {
             "type": "string",
@@ -4402,7 +4400,7 @@
         }
       },
       "BookingModel": {
-        "title": "Seat",
+        "title": "Booking",
         "type": "object",
         "properties": {
           "id": {
@@ -4634,6 +4632,10 @@
                   "type": "string",
                   "example": "Narita International Airport"
                 },
+                "continent": {
+                  "type": "string",
+                  "example": "Asia"
+                },
                 "country": {
                   "type": "string",
                   "example": "Jepang"
@@ -4656,6 +4658,10 @@
                 "airportName": {
                   "type": "string",
                   "example": "Narita International Airport"
+                },
+                "continent": {
+                  "type": "string",
+                  "example": "Asia"
                 },
                 "country": {
                   "type": "string",
@@ -4768,21 +4774,13 @@
                   "type": "string",
                   "format": "binary"
                 },
-                "economyClassPrice": {
-                  "type": "integer",
-                  "example": 200000
+                "seatClass": {
+                  "type": "string",
+                  "example": "Economy"
                 },
-                "premiumEconomyPrice": {
+                "price": {
                   "type": "integer",
                   "example": 250000
-                },
-                "businessPrice": {
-                  "type": "integer",
-                  "example": 300000
-                },
-                "firstClassPrice": {
-                  "type": "integer",
-                  "example": 500000
                 },
                 "departureTime": {
                   "type": "string",
@@ -4823,21 +4821,13 @@
                   "type": "string",
                   "format": "binary"
                 },
-                "economyClassPrice": {
-                  "type": "integer",
-                  "example": 200000
+                "seatClass": {
+                  "type": "string",
+                  "example": "Economy"
                 },
-                "premiumEconomyPrice": {
+                "price": {
                   "type": "integer",
                   "example": 250000
-                },
-                "businessPrice": {
-                  "type": "integer",
-                  "example": 300000
-                },
-                "firstClassPrice": {
-                  "type": "integer",
-                  "example": 500000
                 },
                 "departureTime": {
                   "type": "string",
@@ -4877,6 +4867,21 @@
                 "flightId": {
                   "type": "integer",
                   "example": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "CreateBooking": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "integer",
+                  "example": 2000000
                 }
               }
             }
