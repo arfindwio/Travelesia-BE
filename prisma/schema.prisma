@@ -138,6 +138,7 @@ model Booking {
 model Passenger {
   id               Int     @id @default(autoincrement())
   name             String
+  familyName       String?
   bornDate         String
   citizen          String
   identityNumber   String
