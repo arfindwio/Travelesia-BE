@@ -22,13 +22,14 @@ module.exports = {
 
   createAirport: catchAsync(async (req, res, next) => {
     try {
-      const { airportName, country, city } = req.body;
+      const { airportName, continent, country, city } = req.body;
 
-      if (!airportName || !country || !city) throw new CustomError(400, "Please provide airportName, country, and city");
+      if (!airportName || !continent || !country || !city) throw new CustomError(400, "Please provide airportName, continent, country, and city");
 
       let newAirport = await prisma.airport.create({
         data: {
           airportName,
+          continent,
           country,
           city,
           createdAt: formattedDate(new Date()),
@@ -49,9 +50,9 @@ module.exports = {
   editAirport: catchAsync(async (req, res, next) => {
     try {
       const { airportId } = req.params;
-      const { airportName, country, city } = req.body;
+      const { airportName, continent, country, city } = req.body;
 
-      if (!airportName || !country || !city) throw new CustomError(400, "Please provide airportName, country, and city");
+      if (!airportName || !continent || !country || !city) throw new CustomError(400, "Please provide airportName, continent, country, and city");
 
       const airport = await prisma.airport.findUnique({
         where: { id: Number(airportId) },
@@ -65,6 +66,7 @@ module.exports = {
         },
         data: {
           airportName,
+          continent,
           country,
           city,
           updatedAt: formattedDate(new Date()),
