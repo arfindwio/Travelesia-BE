@@ -4058,6 +4058,139 @@
           }
         }
       }
+    },
+    "/passengers": {
+      "get": {
+        "tags": ["Passengers"],
+        "operationId": "get-all-passengers",
+        "summary": "Get all passengers",
+        "description": "Get all passengers",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "passengers": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/PassengerModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Passengers"],
+        "operationId": "create-passenger",
+        "summary": "create passenger ",
+        "description": "create passenger ",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreatePassenger"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "newPassenger": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/PassengerModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4428,6 +4561,56 @@
             "example": 1
           },
           "flightId": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "PassengerModel": {
+        "title": "Passenger",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Budi"
+          },
+          "familyName": {
+            "type": "string",
+            "example": "Cahyono"
+          },
+          "bornDate": {
+            "type": "string",
+            "example": "01 Januari 2012"
+          },
+          "citizen": {
+            "type": "string",
+            "example": "United States"
+          },
+          "identityNumber": {
+            "type": "string",
+            "example": "0123456789"
+          },
+          "publisherCountry": {
+            "type": "string",
+            "example": "United States"
+          },
+          "validUntil": {
+            "type": "string",
+            "example": "01 Mei 2024"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "bookingId": {
             "type": "integer",
             "example": 1
           }
@@ -4897,6 +5080,49 @@
                 "methodPayment": {
                   "type": "string",
                   "example": "Credit Card"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CreatePassenger": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Budi"
+                },
+                "familyName": {
+                  "type": "string",
+                  "example": "Cahyono"
+                },
+                "bornDate": {
+                  "type": "string",
+                  "example": "01 Januari 2012"
+                },
+                "citizen": {
+                  "type": "string",
+                  "example": "United States"
+                },
+                "identityNumber": {
+                  "type": "string",
+                  "example": "0123456789"
+                },
+                "publisherCountry": {
+                  "type": "string",
+                  "example": "United States"
+                },
+                "validUntil": {
+                  "type": "string",
+                  "example": "01 Mei 2024"
+                },
+                "bookingId": {
+                  "type": "integer",
+                  "example": 1
                 }
               }
             }
