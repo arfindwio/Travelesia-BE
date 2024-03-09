@@ -4191,6 +4191,83 @@
           }
         }
       }
+    },
+    "/passengers/{bookingId}": {
+      "get": {
+        "tags": ["Passengers"],
+        "operationId": "get-all-passengers-by-bookingId",
+        "summary": "get all passengers by bookingId",
+        "description": "get all passengers by bookingId",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bookingId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the booking to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "passengers": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/PassengerModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

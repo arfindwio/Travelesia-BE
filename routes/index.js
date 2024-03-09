@@ -11,6 +11,7 @@ const Airline = require("./airline.routes");
 const Flight = require("./flight.routes");
 const Seat = require("./seat.routes");
 const Booking = require("./booking.routes");
+const Passenger = require("./passenger.routes");
 
 // API Docs
 router.use("/api-docs", swaggerUi.serve);
@@ -26,5 +27,6 @@ router.use("/api/v1/airlines", Airline);
 router.use("/api/v1/flights", Flight);
 router.use("/api/v1/seats", Seat);
 router.use("/api/v1/bookings", Booking);
+router.use("/api/v1/passengers", Passenger);
 
 module.exports = router;
