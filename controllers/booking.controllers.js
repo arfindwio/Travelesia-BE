@@ -5,16 +5,26 @@ const catchAsync = require("../utils/catchAsync");
 const { CustomError } = require("../utils/errorHandler");
 const { formattedDate } = require("../utils/formattedDate");
 const { generatedBookingCode } = require("../utils/codeGenerator");
+const { getPagination } = require("../utils/getPagination");
 
 module.exports = {
   getAllBookings: catchAsync(async (req, res, next) => {
     try {
-      const bookings = await prisma.booking.findMany();
+      const { page = 1, limit = 10 } = req.query;
+
+      const bookings = await prisma.booking.findMany({
+        skip: (Number(page) - 1) * Number(limit),
+        take: Number(limit),
+      });
+
+      const totalBookings = await prisma.airport.count();
+
+      const pagination = getPagination(req, totalBookings, Number(page), Number(limit));
 
       res.status(200).json({
         status: true,
         message: "show all bookings successful",
-        data: { bookings },
+        data: { pagination, bookings },
       });
     } catch (err) {
       next(err);
