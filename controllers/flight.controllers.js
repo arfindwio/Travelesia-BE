@@ -6,16 +6,26 @@ const imagekit = require("../libs/imagekit");
 const { CustomError } = require("../utils/errorHandler");
 const catchAsync = require("../utils/catchAsync");
 const { formattedDate } = require("../utils/formattedDate");
+const { getPagination } = require("../utils/getPagination");
 
 module.exports = {
   getAllFlights: catchAsync(async (req, res, next) => {
     try {
-      const flights = await prisma.flight.findMany();
+      const { page = 1, limit = 10 } = req.query;
+
+      const flights = await prisma.flight.findMany({
+        skip: (Number(page) - 1) * Number(limit),
+        take: Number(limit),
+      });
+
+      const totalFlights = await prisma.airport.count();
+
+      const pagination = getPagination(req, totalFlights, Number(page), Number(limit));
 
       res.status(200).json({
         status: true,
         message: "show all flights successful",
-        data: { flights },
+        data: { pagination, flights },
       });
     } catch (err) {
       next(err);

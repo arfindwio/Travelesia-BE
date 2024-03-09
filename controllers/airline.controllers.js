@@ -4,16 +4,26 @@ const prisma = new PrismaClient();
 const catchAsync = require("../utils/catchAsync");
 const { CustomError } = require("../utils/errorHandler");
 const { formattedDate } = require("../utils/formattedDate");
+const { getPagination } = require("../utils/getPagination");
 
 module.exports = {
   getAllAirlines: catchAsync(async (req, res, next) => {
     try {
-      const airlines = await prisma.airline.findMany();
+      const { page = 1, limit = 10 } = req.query;
+
+      const airlines = await prisma.airline.findMany({
+        skip: (Number(page) - 1) * Number(limit),
+        take: Number(limit),
+      });
+
+      const totalAirlines = await prisma.airport.count();
+
+      const pagination = getPagination(req, totalAirlines, Number(page), Number(limit));
 
       res.status(200).json({
         status: true,
         message: "show all airlines successful",
-        data: { airlines },
+        data: { pagination, airlines },
       });
     } catch (err) {
       next(err);
