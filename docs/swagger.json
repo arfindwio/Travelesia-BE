@@ -2365,6 +2365,24 @@
         "operationId": "get-all-airports",
         "summary": "Get all airports",
         "description": "Get all airports",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Used to specify a particular page when retrieving airports data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Determines the limit of the number of airports to be returned in a single request.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -2648,6 +2666,24 @@
         "operationId": "get-all-terminals",
         "summary": "Get all terminals",
         "description": "Get all terminals",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Used to specify a particular page when retrieving terminals data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Determines the limit of the number of terminals to be returned in a single request.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -2931,6 +2967,24 @@
         "operationId": "get-all-airlines",
         "summary": "Get all airlines",
         "description": "Get all airlines",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Used to specify a particular page when retrieving airlines data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Determines the limit of the number of airlines to be returned in a single request.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -3214,6 +3268,24 @@
         "operationId": "get-all-flights",
         "summary": "Get all flights",
         "description": "Get all flights",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Used to specify a particular page when retrieving flights data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Determines the limit of the number of flights to be returned in a single request.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -3798,6 +3870,24 @@
         "security": [
           {
             "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Used to specify a particular page when retrieving bookings data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Determines the limit of the number of bookings to be returned in a single request.",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -5154,9 +5244,25 @@
             "schema": {
               "type": "object",
               "properties": {
+                "bookingCode": {
+                  "type": "string",
+                  "example": "6723y2GHK6723y2GHK"
+                },
                 "methodPayment": {
                   "type": "string",
                   "example": "Credit Card"
+                },
+                "cardNumber": {
+                  "type": "string",
+                  "example": "4811111111111114"
+                },
+                "cvv": {
+                  "type": "string",
+                  "example": "123"
+                },
+                "expiryDate": {
+                  "type": "string",
+                  "example": "02/25"
                 }
               }
             }
