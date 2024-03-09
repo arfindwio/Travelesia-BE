@@ -5154,9 +5154,25 @@
             "schema": {
               "type": "object",
               "properties": {
+                "bookingCode": {
+                  "type": "string",
+                  "example": "6723y2GHK6723y2GHK"
+                },
                 "methodPayment": {
                   "type": "string",
                   "example": "Credit Card"
+                },
+                "cardNumber": {
+                  "type": "string",
+                  "example": "4811111111111114"
+                },
+                "cvv": {
+                  "type": "string",
+                  "example": "123"
+                },
+                "expiryDate": {
+                  "type": "string",
+                  "example": "02/25"
                 }
               }
             }
