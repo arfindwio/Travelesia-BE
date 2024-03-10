@@ -1,11 +1,23 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const midtransClient = require("midtrans-client");
+const axios = require("axios");
 
 const catchAsync = require("../utils/catchAsync");
 const { CustomError } = require("../utils/errorHandler");
 const { formattedDate } = require("../utils/formattedDate");
 const { generatedBookingCode } = require("../utils/codeGenerator");
 const { getPagination } = require("../utils/getPagination");
+
+const { PAYMENT_DEV_CLIENT_KEY, PAYMENT_DEV_SERVER_KEY, PAYMENT_PROD_CLIENT_KEY, PAYMENT_PROD_SERVER_KEY, FRONTEND_URL } = process.env;
+
+const isProduction = false;
+
+let core = new midtransClient.CoreApi({
+  isProduction: isProduction,
+  serverKey: isProduction ? PAYMENT_PROD_SERVER_KEY : PAYMENT_DEV_SERVER_KEY,
+  clientKey: isProduction ? PAYMENT_PROD_CLIENT_KEY : PAYMENT_DEV_CLIENT_KEY,
+});
 
 module.exports = {
   getAllBookings: catchAsync(async (req, res, next) => {
@@ -223,7 +235,7 @@ module.exports = {
         status: true,
         message: "Payment initiated successfully",
         data: {
-          newPayment,
+          payBooking,
           transaction,
         },
       });

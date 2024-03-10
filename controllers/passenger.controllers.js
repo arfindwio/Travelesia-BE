@@ -8,11 +8,21 @@ const { formattedDate } = require("../utils/formattedDate");
 module.exports = {
   getAllPassengers: catchAsync(async (req, res, next) => {
     try {
-      const passengers = await prisma.passenger.findMany();
+      const { page = 1, limit = 10 } = req.query;
+
+      const passengers = await prisma.passenger.findMany({
+        skip: (Number(page) - 1) * Number(limit),
+        take: Number(limit),
+      });
+
+      const totalPassengers = await prisma.airport.count();
+
+      const pagination = getPagination(req, totalPassengers, Number(page), Number(limit));
+
       res.status(200).json({
         status: true,
         message: "show all passengers successful",
-        data: { passengers },
+        data: { pagination, passengers },
       });
     } catch (err) {
       next(err);
