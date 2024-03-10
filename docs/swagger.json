@@ -2399,12 +2399,22 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "airports": {
+                            "pagination": {
                               "allOf": [
                                 {
-                                  "$ref": "#/components/schemas/AirportModel"
+                                  "$ref": "#/components/schemas/Pagination"
                                 }
                               ]
+                            },
+                            "airports": {
+                              "type": "array",
+                              "items": {
+                                "allOf": [
+                                  {
+                                    "$ref": "#/components/schemas/AirportModel"
+                                  }
+                                ]
+                              }
                             }
                           }
                         }
@@ -2700,12 +2710,22 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "terminals": {
+                            "pagination": {
                               "allOf": [
                                 {
-                                  "$ref": "#/components/schemas/TerminalModel"
+                                  "$ref": "#/components/schemas/Pagination"
                                 }
                               ]
+                            },
+                            "terminals": {
+                              "type": "array",
+                              "items": {
+                                "allOf": [
+                                  {
+                                    "$ref": "#/components/schemas/TerminalModel"
+                                  }
+                                ]
+                              }
                             }
                           }
                         }
@@ -3001,12 +3021,22 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "airlines": {
+                            "pagination": {
                               "allOf": [
                                 {
-                                  "$ref": "#/components/schemas/AirlineModel"
+                                  "$ref": "#/components/schemas/Pagination"
                                 }
                               ]
+                            },
+                            "airlines": {
+                              "type": "array",
+                              "items": {
+                                "allOf": [
+                                  {
+                                    "$ref": "#/components/schemas/AirlineModel"
+                                  }
+                                ]
+                              }
                             }
                           }
                         }
@@ -3302,12 +3332,22 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "flights": {
+                            "pagination": {
                               "allOf": [
                                 {
-                                  "$ref": "#/components/schemas/FlightModel"
+                                  "$ref": "#/components/schemas/Pagination"
                                 }
                               ]
+                            },
+                            "flights": {
+                              "type": "array",
+                              "items": {
+                                "allOf": [
+                                  {
+                                    "$ref": "#/components/schemas/FlightModel"
+                                  }
+                                ]
+                              }
                             }
                           }
                         }
@@ -3906,12 +3946,22 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "bookings": {
+                            "pagination": {
                               "allOf": [
                                 {
-                                  "$ref": "#/components/schemas/BookingModel"
+                                  "$ref": "#/components/schemas/Pagination"
                                 }
                               ]
+                            },
+                            "bookings": {
+                              "type": "array",
+                              "items": {
+                                "allOf": [
+                                  {
+                                    "$ref": "#/components/schemas/BookingModel"
+                                  }
+                                ]
+                              }
                             }
                           }
                         }
@@ -4160,6 +4210,24 @@
             "bearerAuth": []
           }
         ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Used to specify a particular page when retrieving passengers data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Determines the limit of the number of passengers to be returned in a single request.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -4176,12 +4244,22 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "passengers": {
+                            "pagination": {
                               "allOf": [
                                 {
-                                  "$ref": "#/components/schemas/PassengerModel"
+                                  "$ref": "#/components/schemas/Pagination"
                                 }
                               ]
+                            },
+                            "passengers": {
+                              "type": "array",
+                              "items": {
+                                "allOf": [
+                                  {
+                                    "$ref": "#/components/schemas/PassengerModel"
+                                  }
+                                ]
+                              }
                             }
                           }
                         }
@@ -4385,11 +4463,11 @@
             "properties": {
               "next": {
                 "type": "string",
-                "example": "https://domain.com/users?page=3&limit=10"
+                "example": "https://domain.com/items?page=3&limit=10"
               },
               "prev": {
                 "type": "string",
-                "example": "https://domain.com/users?page=1&limit=10"
+                "example": "https://domain.com/items?page=1&limit=10"
               }
             }
           },
