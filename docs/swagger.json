@@ -3493,6 +3493,81 @@
       }
     },
     "/flights/{flightId}": {
+      "get": {
+        "tags": ["Flights"],
+        "operationId": "get-flight-by-id",
+        "summary": "Get flight by id",
+        "description": "Get flight by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "flightId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the flight to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "flight": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/FlightModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "tags": ["Flights"],
         "operationId": "edit-flight-by-id",
@@ -4125,12 +4200,14 @@
             }
           }
         }
-      },
+      }
+    },
+    "/bookings/{bookingCode}": {
       "put": {
         "tags": ["Bookings"],
-        "operationId": "pay-booking-by-flightId",
-        "summary": "pay booking by flightId",
-        "description": "pay booking by flightId",
+        "operationId": "pay-booking-by-bookingCode",
+        "summary": "pay booking by bookingCode",
+        "description": "pay booking by bookingCode",
         "security": [
           {
             "bearerAuth": []
@@ -4139,7 +4216,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "flightId",
+            "name": "bookingCode",
             "schema": {
               "type": "integer"
             },
@@ -4869,6 +4946,18 @@
             "type": "string",
             "example": "6723y2GHK"
           },
+          "adult": {
+            "type": "integer",
+            "example": 3
+          },
+          "child": {
+            "type": "integer",
+            "example": 2
+          },
+          "baby": {
+            "type": "integer",
+            "example": 1
+          },
           "amount": {
             "type": "integer",
             "example": 800000
@@ -4899,7 +4988,11 @@
             "type": "integer",
             "example": 1
           },
-          "name": {
+          "title": {
+            "type": "string",
+            "example": "Mr."
+          },
+          "fullName": {
             "type": "string",
             "example": "Budi"
           },
@@ -5387,6 +5480,18 @@
             "schema": {
               "type": "object",
               "properties": {
+                "adult": {
+                  "type": "integer",
+                  "example": 3
+                },
+                "child": {
+                  "type": "integer",
+                  "example": 2
+                },
+                "baby": {
+                  "type": "integer",
+                  "example": 1
+                },
                 "amount": {
                   "type": "integer",
                   "example": 2000000
@@ -5402,10 +5507,6 @@
             "schema": {
               "type": "object",
               "properties": {
-                "bookingCode": {
-                  "type": "string",
-                  "example": "6723y2GHK6723y2GHK"
-                },
                 "methodPayment": {
                   "type": "string",
                   "example": "Credit Card"
@@ -5433,7 +5534,11 @@
             "schema": {
               "type": "object",
               "properties": {
-                "name": {
+                "title": {
+                  "type": "string",
+                  "example": "Mr."
+                },
+                "fullName": {
                   "type": "string",
                   "example": "Budi"
                 },

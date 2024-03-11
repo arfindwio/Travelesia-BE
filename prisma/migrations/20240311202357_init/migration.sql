@@ -116,6 +116,9 @@ CREATE TABLE "Seat" (
 CREATE TABLE "Booking" (
     "id" SERIAL NOT NULL,
     "bookingCode" TEXT NOT NULL,
+    "adult" INTEGER NOT NULL,
+    "child" INTEGER NOT NULL,
+    "baby" INTEGER NOT NULL,
     "amount" INTEGER NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'Unpaid',
     "methodPayment" TEXT,
@@ -130,7 +133,8 @@ CREATE TABLE "Booking" (
 -- CreateTable
 CREATE TABLE "Passenger" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "fullName" TEXT NOT NULL,
     "familyName" TEXT,
     "bornDate" TEXT NOT NULL,
     "citizen" TEXT NOT NULL,

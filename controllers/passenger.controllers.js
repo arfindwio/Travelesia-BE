@@ -32,10 +32,10 @@ module.exports = {
 
   createPassenger: catchAsync(async (req, res, next) => {
     try {
-      const { name, familyName, bornDate, citizen, identityNumber, publisherCountry, validUntil, bookingId } = req.body;
+      const { title, fullName, familyName, bornDate, citizen, identityNumber, publisherCountry, validUntil, bookingId } = req.body;
 
-      if (!name || !bornDate || !citizen || !identityNumber || !publisherCountry || !validUntil || !bookingId) {
-        throw new CustomError(400, "Please provide name, bornDate, citizen, identityNumber, publisherCountry, validUntil, and bookingId");
+      if (!title || !fullName || !bornDate || !citizen || !identityNumber || !publisherCountry || !validUntil || !bookingId) {
+        throw new CustomError(400, "Please provide title, fullName, bornDate, citizen, identityNumber, publisherCountry, validUntil, and bookingId");
       }
 
       let booking = await prisma.booking.findUnique({
@@ -46,7 +46,8 @@ module.exports = {
 
       let newPassenger = await prisma.passenger.create({
         data: {
-          name,
+          title,
+          fullName,
           familyName,
           bornDate,
           citizen,

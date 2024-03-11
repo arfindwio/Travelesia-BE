@@ -20,7 +20,7 @@ module.exports = {
         flightsQuery.where = { flightCode: { contains: search, mode: "insensitive" } };
       }
 
-      if (d || a || s) {
+      if (d || a || s || f) {
         if ((d && a && s) || (d && a) || (d && s) || (a && s)) {
           flightsQuery.where.AND = [];
           if (d) flightsQuery.where.AND.push({ departureTerminal: { airport: { city: { contains: d, mode: "insensitive" } } } });
@@ -31,18 +31,56 @@ module.exports = {
           if (d) flightsQuery.where.OR.push({ departureTerminal: { airport: { city: { contains: d, mode: "insensitive" } } } });
           if (a) flightsQuery.where.OR.push({ arrivalTerminal: { airport: { city: { contains: a, mode: "insensitive" } } } });
           if (s) flightsQuery.where.OR.push({ seatClass: { contains: s, mode: "insensitive" } });
+          if (f) flightsQuery.where.OR.push({ departureTerminal: { airport: { continent: { contains: f, mode: "insensitive" } } } }, { arrivalTerminal: { airport: { continent: { contains: f, mode: "insensitive" } } } });
         }
-      }
-
-      if (f) {
-        if (!flightsQuery.where.OR) flightsQuery.where.OR = [];
-        flightsQuery.where.OR.push({ departureTerminal: { airport: { continent: { contains: f, mode: "insensitive" } } } }, { arrivalTerminal: { airport: { continent: { contains: f, mode: "insensitive" } } } });
       }
 
       const flights = await prisma.flight.findMany({
         skip: (Number(page) - 1) * Number(limit),
         take: Number(limit),
         where: flightsQuery.where,
+        select: {
+          id: true,
+          flightCode: true,
+          flightImg: true,
+          seatClass: true,
+          price: true,
+          departureTime: true,
+          arrivalTime: true,
+          airline: {
+            select: {
+              airlineName: true,
+              baggage: true,
+              cabinBaggage: true,
+            },
+          },
+          departureTerminal: {
+            select: {
+              terminalName: true,
+              airport: {
+                select: {
+                  airportName: true,
+                  city: true,
+                  continent: true,
+                  country: true,
+                },
+              },
+            },
+          },
+          arrivalTerminal: {
+            select: {
+              terminalName: true,
+              airport: {
+                select: {
+                  airportName: true,
+                  city: true,
+                  continent: true,
+                  country: true,
+                },
+              },
+            },
+          },
+        },
       });
 
       const totalFlights = await prisma.flight.count({
@@ -118,6 +156,67 @@ module.exports = {
         status: true,
         message: "create flight successful",
         data: { newFlight },
+      });
+    } catch (err) {
+      next(err);
+    }
+  }),
+
+  getFlightById: catchAsync(async (req, res, next) => {
+    try {
+      const { flightId } = req.params;
+
+      const flight = await prisma.flight.findUnique({
+        where: { id: Number(flightId) },
+        select: {
+          flightCode: true,
+          seatClass: true,
+          price: true,
+          departureTime: true,
+          arrivalTime: true,
+          airline: {
+            select: {
+              airlineName: true,
+              baggage: true,
+              cabinBaggage: true,
+            },
+          },
+          departureTerminal: {
+            select: {
+              terminalName: true,
+              airport: {
+                select: {
+                  airportName: true,
+                },
+              },
+            },
+          },
+          arrivalTerminal: {
+            select: {
+              terminalName: true,
+              airport: {
+                select: {
+                  airportName: true,
+                },
+              },
+            },
+          },
+          seat: {
+            select: {
+              id: true,
+              seatNumber: true,
+              isBooked: true,
+            },
+          },
+        },
+      });
+
+      if (!flight) throw new CustomError(404, "flight Not Found");
+
+      res.status(200).json({
+        status: true,
+        message: "show all flights successful",
+        data: { flight },
       });
     } catch (err) {
       next(err);
