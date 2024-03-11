@@ -1,7 +1,6 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
 const path = require("path");
 
+const prisma = require("../libs/prismaClient");
 const imagekit = require("../libs/imagekit");
 const { CustomError } = require("../utils/errorHandler");
 const catchAsync = require("../utils/catchAsync");
@@ -11,14 +10,44 @@ const { getPagination } = require("../utils/getPagination");
 module.exports = {
   getAllFlights: catchAsync(async (req, res, next) => {
     try {
-      const { page = 1, limit = 10 } = req.query;
+      const { search, d, a, s, f, page = 1, limit = 10 } = req.query;
+
+      let flightsQuery = {
+        where: {},
+      };
+
+      if (search) {
+        flightsQuery.where = { flightCode: { contains: search, mode: "insensitive" } };
+      }
+
+      if (d || a || s) {
+        if ((d && a && s) || (d && a) || (d && s) || (a && s)) {
+          flightsQuery.where.AND = [];
+          if (d) flightsQuery.where.AND.push({ departureTerminal: { airport: { city: { contains: d, mode: "insensitive" } } } });
+          if (a) flightsQuery.where.AND.push({ arrivalTerminal: { airport: { city: { contains: a, mode: "insensitive" } } } });
+          if (s) flightsQuery.where.AND.push({ seatClass: { contains: s, mode: "insensitive" } });
+        } else {
+          flightsQuery.where.OR = [];
+          if (d) flightsQuery.where.OR.push({ departureTerminal: { airport: { city: { contains: d, mode: "insensitive" } } } });
+          if (a) flightsQuery.where.OR.push({ arrivalTerminal: { airport: { city: { contains: a, mode: "insensitive" } } } });
+          if (s) flightsQuery.where.OR.push({ seatClass: { contains: s, mode: "insensitive" } });
+        }
+      }
+
+      if (f) {
+        if (!flightsQuery.where.OR) flightsQuery.where.OR = [];
+        flightsQuery.where.OR.push({ departureTerminal: { airport: { continent: { contains: f, mode: "insensitive" } } } }, { arrivalTerminal: { airport: { continent: { contains: f, mode: "insensitive" } } } });
+      }
 
       const flights = await prisma.flight.findMany({
         skip: (Number(page) - 1) * Number(limit),
         take: Number(limit),
+        where: flightsQuery.where,
       });
 
-      const totalFlights = await prisma.airport.count();
+      const totalFlights = await prisma.flight.count({
+        where: flightsQuery.where,
+      });
 
       const pagination = getPagination(req, totalFlights, Number(page), Number(limit));
 

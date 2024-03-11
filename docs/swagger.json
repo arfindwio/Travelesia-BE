@@ -2367,6 +2367,14 @@
         "description": "Get all airports",
         "parameters": [
           {
+            "name": "search",
+            "in": "query",
+            "description": "Used to specify a particular search when retrieving airports data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Used to specify a particular page when retrieving airports data",
@@ -2677,6 +2685,14 @@
         "summary": "Get all terminals",
         "description": "Get all terminals",
         "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Used to specify a particular search when retrieving terminals data",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "page",
             "in": "query",
@@ -2989,6 +3005,14 @@
         "description": "Get all airlines",
         "parameters": [
           {
+            "name": "search",
+            "in": "query",
+            "description": "Used to specify a particular search when retrieving airlines data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Used to specify a particular page when retrieving airlines data",
@@ -3299,6 +3323,46 @@
         "summary": "Get all flights",
         "description": "Get all flights",
         "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Used to specify a particular search when retrieving flights data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "d",
+            "in": "query",
+            "description": "Used to specify a particular departure when retrieving flights data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "a",
+            "in": "query",
+            "description": "Used to specify a particular arrival when retrieving flights data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "s",
+            "in": "query",
+            "description": "Used to specify a particular seat class when retrieving flights data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "f",
+            "in": "query",
+            "description": "Used to specify a particular continent when retrieving flights data",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "page",
             "in": "query",
@@ -3914,6 +3978,14 @@
         ],
         "parameters": [
           {
+            "name": "search",
+            "in": "query",
+            "description": "Used to specify a particular search when retrieving bookings data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "Used to specify a particular page when retrieving bookings data",
@@ -4211,6 +4283,14 @@
           }
         ],
         "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Used to specify a particular search when retrieving passengers data",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "page",
             "in": "query",
