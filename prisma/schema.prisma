@@ -123,6 +123,9 @@ model Seat {
 model Booking {
   id            Int         @id @default(autoincrement())
   bookingCode   String      @unique
+  adult         Int
+  child         Int
+  baby          Int
   amount        Int
   status        String      @default("Unpaid")
   methodPayment String?
@@ -137,7 +140,8 @@ model Booking {
 
 model Passenger {
   id               Int     @id @default(autoincrement())
-  name             String
+  title            String
+  fullName         String
   familyName       String?
   bornDate         String
   citizen          String

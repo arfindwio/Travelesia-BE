@@ -27,6 +27,59 @@ module.exports = {
         skip: (Number(page) - 1) * Number(limit),
         take: Number(limit),
         where: search ? { flight: { flightCode: { contains: search, mode: "insensitive" } } } : {},
+        select: {
+          id: true,
+          bookingCode: true,
+          adult: true,
+          child: true,
+          baby: true,
+          amount: true,
+          status: true,
+          flight: {
+            select: {
+              flightCode: true,
+              seatClass: true,
+              price: true,
+              departureTime: true,
+              arrivalTime: true,
+              airline: {
+                select: {
+                  airlineName: true,
+                },
+              },
+              departureTerminal: {
+                select: {
+                  terminalName: true,
+                  airport: {
+                    select: {
+                      airportName: true,
+                      city: true,
+                    },
+                  },
+                },
+              },
+              arrivalTerminal: {
+                select: {
+                  terminalName: true,
+                  airport: {
+                    select: {
+                      airportName: true,
+                      city: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          passenger: {
+            select: {
+              id: true,
+              title: true,
+              fullName: true,
+              familyName: true,
+            },
+          },
+        },
       });
 
       const totalBookings = await prisma.booking.count({
@@ -48,7 +101,7 @@ module.exports = {
   createBooking: catchAsync(async (req, res, next) => {
     try {
       const { flightId } = req.params;
-      const { amount } = req.body;
+      const { adult, child, baby, amount } = req.body;
 
       const flight = await prisma.flight.findUnique({
         where: { id: Number(flightId) },
@@ -59,7 +112,9 @@ module.exports = {
       let newBooking = await prisma.booking.create({
         data: {
           bookingCode: generatedBookingCode(),
-          amount: parseInt(amount),
+          adult: parseInt(adult),
+          child: parseInt(child),
+          baby: parseInt(baby),
           userId: Number(req.user.id),
           flightId: Number(flightId),
           createdAt: formattedDate(new Date()),
@@ -78,10 +133,8 @@ module.exports = {
 
   payBooking: catchAsync(async (req, res, next) => {
     try {
-      const { flightId } = req.params;
-      const { bookingCode, methodPayment, cardNumber, cvv, expiryDate, bankName, store, message } = req.body;
-
-      if (!bookingCode) throw new CustomError(400, "Please provide bookingCode");
+      const { bookingCode } = req.params;
+      const { methodPayment, cardNumber, cvv, expiryDate, bankName, store, message } = req.body;
 
       const booking = await prisma.booking.findUnique({
         where: { bookingCode },
@@ -104,12 +157,6 @@ module.exports = {
           userProfile: true,
         },
       });
-
-      const flight = await prisma.flight.findUnique({
-        where: { id: Number(flightId) },
-      });
-
-      if (!flight) throw new CustomError(404, `Flight Not Found With Id ${flightId}`);
 
       let payBooking = await prisma.booking.update({
         where: { bookingCode },
