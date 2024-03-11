@@ -1,7 +1,6 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
 const path = require("path");
 
+const prisma = require("../libs/prismaClient");
 const catchAsync = require("../utils/catchAsync");
 const { CustomError } = require("../utils/errorHandler");
 const imagekit = require("../libs/imagekit");
