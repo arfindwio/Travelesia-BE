@@ -1,8 +1,7 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
 const midtransClient = require("midtrans-client");
 const axios = require("axios");
 
+const prisma = require("../libs/prismaClient");
 const catchAsync = require("../utils/catchAsync");
 const { CustomError } = require("../utils/errorHandler");
 const { formattedDate } = require("../utils/formattedDate");
@@ -22,14 +21,17 @@ let core = new midtransClient.CoreApi({
 module.exports = {
   getAllBookings: catchAsync(async (req, res, next) => {
     try {
-      const { page = 1, limit = 10 } = req.query;
+      const { search, page = 1, limit = 10 } = req.query;
 
       const bookings = await prisma.booking.findMany({
         skip: (Number(page) - 1) * Number(limit),
         take: Number(limit),
+        where: search ? { flight: { flightCode: { contains: search, mode: "insensitive" } } } : {},
       });
 
-      const totalBookings = await prisma.airport.count();
+      const totalBookings = await prisma.booking.count({
+        where: search ? { flight: { flightCode: { contains: search, mode: "insensitive" } } } : {},
+      });
 
       const pagination = getPagination(req, totalBookings, Number(page), Number(limit));
 

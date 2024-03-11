@@ -1,6 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
-
+const prisma = require("../libs/prismaClient");
 const catchAsync = require("../utils/catchAsync");
 const { CustomError } = require("../utils/errorHandler");
 const { formattedDate } = require("../utils/formattedDate");
@@ -8,14 +6,17 @@ const { formattedDate } = require("../utils/formattedDate");
 module.exports = {
   getAllPassengers: catchAsync(async (req, res, next) => {
     try {
-      const { page = 1, limit = 10 } = req.query;
+      const { search, page = 1, limit = 10 } = req.query;
 
       const passengers = await prisma.passenger.findMany({
         skip: (Number(page) - 1) * Number(limit),
         take: Number(limit),
+        where: search ? { name: { contains: search, mode: "insensitive" } } : {},
       });
 
-      const totalPassengers = await prisma.airport.count();
+      const totalPassengers = await prisma.airport.count({
+        where: search ? { name: { contains: search, mode: "insensitive" } } : {},
+      });
 
       const pagination = getPagination(req, totalPassengers, Number(page), Number(limit));
 
