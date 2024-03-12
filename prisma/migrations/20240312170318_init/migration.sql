@@ -91,6 +91,7 @@ CREATE TABLE "Flight" (
     "price" INTEGER NOT NULL,
     "departureTime" TEXT NOT NULL,
     "arrivalTime" TEXT NOT NULL,
+    "duration" INTEGER NOT NULL,
     "createdAt" TEXT NOT NULL,
     "updatedAt" TEXT NOT NULL,
     "airlineId" INTEGER NOT NULL,

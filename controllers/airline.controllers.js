@@ -62,8 +62,6 @@ module.exports = {
       const { airlineId } = req.params;
       const { airlineName, baggage, cabinBaggage } = req.body;
 
-      if (!airlineName || !baggage || !cabinBaggage) throw new CustomError(400, "Please provide airlineName, country, and city");
-
       const airline = await prisma.airline.findUnique({
         where: { id: Number(airlineId) },
       });
