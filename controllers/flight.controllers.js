@@ -4,8 +4,9 @@ const prisma = require("../libs/prismaClient");
 const imagekit = require("../libs/imagekit");
 const { CustomError } = require("../utils/errorHandler");
 const catchAsync = require("../utils/catchAsync");
-const { formattedDate } = require("../utils/formattedDate");
+const { formattedDate, convertDateTime } = require("../utils/formattedDate");
 const { getPagination } = require("../utils/getPagination");
+const { calculateDurationDateTime } = require("../utils/calculateDuration");
 
 module.exports = {
   getAllFlights: catchAsync(async (req, res, next) => {
@@ -47,6 +48,7 @@ module.exports = {
           price: true,
           departureTime: true,
           arrivalTime: true,
+          duration: true,
           airline: {
             select: {
               airlineName: true,
@@ -105,8 +107,8 @@ module.exports = {
       const file = req.file;
       let imageURL;
 
-      if (!flightCode || !seatClass || !price || !departureTime || !arrivalTime || !airlineId || !departureId || !arrivalId)
-        throw new CustomError(400, "Please provide flightCode, seatClass, price, departureTime, arrivalTime, airlineId, departureId, and arrivalId");
+      if (!flightCode || !file || !seatClass || !price || !departureTime || !arrivalTime || !airlineId || !departureId || !arrivalId)
+        throw new CustomError(400, "Please provide flightCode, flightImg, seatClass, price, departureTime, arrivalTime, airlineId, departureId, and arrivalId");
 
       let airline = await prisma.airline.findUnique({
         where: { id: Number(airlineId) },
@@ -128,6 +130,10 @@ module.exports = {
 
       if (!terminal1 || !terminal2) throw new CustomError(404, "terminal  Not Found");
 
+      const departureDateTime = convertDateTime(departureTime);
+      const arrivalDateTime = convertDateTime(arrivalTime);
+      const durationFlight = calculateDurationDateTime(departureDateTime, arrivalDateTime);
+
       if (file) {
         const strFile = file.buffer.toString("base64");
 
@@ -144,6 +150,9 @@ module.exports = {
           ...req.body,
           flightImg: imageURL,
           price: parseInt(price),
+          departureTime: departureDateTime,
+          arrivalTime: arrivalDateTime,
+          duration: parseInt(durationFlight),
           airlineId: Number(airlineId),
           departureId: Number(departureId),
           arrivalId: Number(arrivalId),
@@ -174,6 +183,7 @@ module.exports = {
           price: true,
           departureTime: true,
           arrivalTime: true,
+          duration: true,
           airline: {
             select: {
               airlineName: true,
@@ -226,12 +236,12 @@ module.exports = {
   editFlight: catchAsync(async (req, res, next) => {
     try {
       const { flightId } = req.params;
-      const { flightCode, seatClass, price, departureTime, arrivalTime, airlineId, departureId, arrivalId } = req.body;
+      let { flightCode, seatClass, price, departureTime, arrivalTime, airlineId, departureId, arrivalId } = req.body;
       const file = req.file;
       let imageURL;
-
-      if (!flightCode || !seatClass || !price || !departureTime || !arrivalTime || !airlineId || !departureId || !arrivalId)
-        throw new CustomError(400, "Please provide flightCode, seatClass, price,departureTime, arrivalTime, airlineId, departureId, and arrivalId");
+      let durationFlight;
+      let departureDateTime;
+      let arrivalDateTime;
 
       const flight = await prisma.flight.findUnique({
         where: { id: Number(flightId) },
@@ -259,6 +269,22 @@ module.exports = {
 
       if (!terminal1 || !terminal2) throw new CustomError(404, "terminal Not Found");
 
+      if (departureTime || arrivalTime) {
+        if (departureTime) {
+          departureDateTime = convertDateTime(departureTime);
+          durationFlight = parseInt(calculateDurationDateTime(departureDateTime, flight.arrivalTime));
+        }
+        if (arrivalTime) {
+          arrivalDateTime = convertDateTime(arrivalTime);
+          durationFlight = parseInt(calculateDurationDateTime(flight.departureTime, arrivalDateTime));
+        }
+        if (departureTime && arrivalTime) {
+          departureDateTime = convertDateTime(departureTime);
+          arrivalDateTime = convertDateTime(arrivalTime);
+          durationFlight = parseInt(calculateDurationDateTime(departureDateTime, arrivalDateTime));
+        }
+      }
+
       if (file) {
         const strFile = file.buffer.toString("base64");
 
@@ -277,7 +303,9 @@ module.exports = {
           flightImg: imageURL,
           seatClass,
           price: parseInt(price),
-          arrivalTime,
+          departureTime: departureDateTime,
+          arrivalTime: arrivalDateTime,
+          duration: durationFlight,
           airlineId: Number(airlineId),
           departureId: Number(departureId),
           arrivalId: Number(arrivalId),

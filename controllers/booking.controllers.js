@@ -42,6 +42,7 @@ module.exports = {
               price: true,
               departureTime: true,
               arrivalTime: true,
+              duration: true,
               airline: {
                 select: {
                   airlineName: true,
