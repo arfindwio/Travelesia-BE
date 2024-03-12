@@ -63,8 +63,6 @@ module.exports = {
       const { airportId } = req.params;
       const { airportName, continent, country, city } = req.body;
 
-      if (!airportName || !continent || !country || !city) throw new CustomError(400, "Please provide airportName, continent, country, and city");
-
       const airport = await prisma.airport.findUnique({
         where: { id: Number(airportId) },
       });

@@ -4876,11 +4876,15 @@
           },
           "departureTime": {
             "type": "string",
-            "example": "07:00 15 Februari 2024"
+            "example": "07:00 15 March 2024"
           },
           "arrivalTime": {
             "type": "string",
-            "example": "11:00 15 Februari 2024"
+            "example": "11:00 15 March 2024"
+          },
+          "duration": {
+            "type": "string",
+            "example": "4h 0m"
           },
           "createdAt": {
             "type": "string",
@@ -5385,11 +5389,11 @@
                 },
                 "departureTime": {
                   "type": "string",
-                  "example": "07:00 15 Februari 2024"
+                  "example": "2024-03-13T01:40"
                 },
                 "arrivalTime": {
                   "type": "string",
-                  "example": "11:00 15 Februari 2024"
+                  "example": "2024-03-15T01:40"
                 },
                 "airlineId": {
                   "type": "integer",
@@ -5432,11 +5436,11 @@
                 },
                 "departureTime": {
                   "type": "string",
-                  "example": "07:00 15 Februari 2024"
+                  "example": "2024-03-13T01:40"
                 },
                 "arrivalTime": {
                   "type": "string",
-                  "example": "11:00 15 Februari 2024"
+                  "example": "2024-03-15T01:40"
                 },
                 "airlineId": {
                   "type": "integer",
