@@ -17,20 +17,17 @@ module.exports = {
         where: {},
       };
 
-      if (search) {
-        flightsQuery.where = { flightCode: { contains: search, mode: "insensitive" } };
-      }
-
-      if (d || a || s || c || f) {
-        if ((d && a && s) || (d && a) || (d && s) || (a && s)) {
+      if (search || d || a || s || c || f) {
+        if ((search && (d || a || s)) || (d && (search || a || s)) || (a && (d || search || s)) || (s && (d || a || search))) {
           flightsQuery.where.AND = [];
-          flightsQuery.where.OR = [];
+          if (search) flightsQuery.where.AND.push({ flightCode: { contains: search, mode: "insensitive" } });
           if (d) flightsQuery.where.AND.push({ departureTerminal: { airport: { city: { contains: d, mode: "insensitive" } } } });
           if (a) flightsQuery.where.AND.push({ arrivalTerminal: { airport: { city: { contains: a, mode: "insensitive" } } } });
           if (s) flightsQuery.where.AND.push({ seatClass: { contains: s, mode: "insensitive" } });
         } else {
           flightsQuery.where.OR = [];
           flightsQuery.orderBy = {};
+          if (search) flightsQuery.where.OR.push({ flightCode: { contains: search, mode: "insensitive" } });
           if (d) flightsQuery.where.OR.push({ departureTerminal: { airport: { city: { contains: d, mode: "insensitive" } } } });
           if (a) flightsQuery.where.OR.push({ arrivalTerminal: { airport: { city: { contains: a, mode: "insensitive" } } } });
           if (s) flightsQuery.where.OR.push({ seatClass: { contains: s, mode: "insensitive" } });
@@ -51,7 +48,7 @@ module.exports = {
         skip: (Number(page) - 1) * Number(limit),
         take: Number(limit),
         where: flightsQuery.where,
-        orderBy: flightsQuery.orderBy, // Gunakan orderBy yang didefinisikan di atas
+        orderBy: flightsQuery.orderBy,
         select: {
           id: true,
           flightCode: true,
