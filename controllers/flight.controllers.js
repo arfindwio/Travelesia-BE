@@ -11,9 +11,9 @@ const { calculateDurationDateTime } = require("../utils/calculateDuration");
 module.exports = {
   getAllFlights: catchAsync(async (req, res, next) => {
     try {
-      const { search, d, a, s, f, page = 1, limit = 10 } = req.query;
+      const { search, d, a, s, c, f, w, page = 1, limit = 10 } = req.query;
 
-      let flightsQuery = {
+      const flightsQuery = {
         where: {},
       };
 
@@ -21,18 +21,29 @@ module.exports = {
         flightsQuery.where = { flightCode: { contains: search, mode: "insensitive" } };
       }
 
-      if (d || a || s || f) {
+      if (d || a || s || c || f) {
         if ((d && a && s) || (d && a) || (d && s) || (a && s)) {
           flightsQuery.where.AND = [];
+          flightsQuery.where.OR = [];
           if (d) flightsQuery.where.AND.push({ departureTerminal: { airport: { city: { contains: d, mode: "insensitive" } } } });
           if (a) flightsQuery.where.AND.push({ arrivalTerminal: { airport: { city: { contains: a, mode: "insensitive" } } } });
           if (s) flightsQuery.where.AND.push({ seatClass: { contains: s, mode: "insensitive" } });
         } else {
           flightsQuery.where.OR = [];
+          flightsQuery.orderBy = {};
           if (d) flightsQuery.where.OR.push({ departureTerminal: { airport: { city: { contains: d, mode: "insensitive" } } } });
           if (a) flightsQuery.where.OR.push({ arrivalTerminal: { airport: { city: { contains: a, mode: "insensitive" } } } });
           if (s) flightsQuery.where.OR.push({ seatClass: { contains: s, mode: "insensitive" } });
-          if (f) flightsQuery.where.OR.push({ departureTerminal: { airport: { continent: { contains: f, mode: "insensitive" } } } }, { arrivalTerminal: { airport: { continent: { contains: f, mode: "insensitive" } } } });
+          if (c) flightsQuery.where.OR.push({ departureTerminal: { airport: { continent: { contains: c, mode: "insensitive" } } } }, { arrivalTerminal: { airport: { continent: { contains: c, mode: "insensitive" } } } });
+          if (f) flightsQuery.where.OR.push({ departureTime: { contains: f, mode: "insensitive" } }, { arrivalTime: { contains: f, mode: "insensitive" } });
+          if (w) {
+            if (w === "cheapest") flightsQuery.orderBy.price = "asc";
+            if (w === "duration") flightsQuery.orderBy.duration = "asc";
+            if (w === "earliest departure") flightsQuery.orderBy.departureTime = "asc";
+            if (w === "latest departure") flightsQuery.orderBy.departureTime = "desc";
+            if (w === "earliest arrival") flightsQuery.orderBy.arrivalTime = "asc";
+            if (w === "latest arrival") flightsQuery.orderBy.arrivalTime = "desc";
+          }
         }
       }
 
@@ -40,6 +51,7 @@ module.exports = {
         skip: (Number(page) - 1) * Number(limit),
         take: Number(limit),
         where: flightsQuery.where,
+        orderBy: flightsQuery.orderBy, // Gunakan orderBy yang didefinisikan di atas
         select: {
           id: true,
           flightCode: true,
