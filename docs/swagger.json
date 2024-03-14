@@ -3356,9 +3356,25 @@
             }
           },
           {
-            "name": "f",
+            "name": "c",
             "in": "query",
             "description": "Used to specify a particular continent when retrieving flights data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "f",
+            "in": "query",
+            "description": "Used to specify a particular date when retrieving flights data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "w",
+            "in": "query",
+            "description": "Used to specify a particular weed out when retrieving flights data",
             "schema": {
               "type": "string"
             }
