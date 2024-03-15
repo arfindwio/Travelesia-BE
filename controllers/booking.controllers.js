@@ -104,6 +104,8 @@ module.exports = {
       const { flightId } = req.params;
       const { adult, child, baby, amount } = req.body;
 
+      if (!adult || !child || !baby || !amount) throw new CustomError(400, "Please provide adult, child, baby, and amount");
+
       const flight = await prisma.flight.findUnique({
         where: { id: Number(flightId) },
       });
@@ -116,7 +118,7 @@ module.exports = {
           adult: parseInt(adult),
           child: parseInt(child),
           baby: parseInt(baby),
-          amount,
+          amount: parseInt(amount),
           userId: Number(req.user.id),
           flightId: Number(flightId),
           createdAt: formattedDate(new Date()),

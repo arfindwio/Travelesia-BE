@@ -57,10 +57,12 @@ module.exports = {
     }
   }),
 
-  editAirline: catchAsync(async (req, res, next) => {
+  editAirlineById: catchAsync(async (req, res, next) => {
     try {
       const { airlineId } = req.params;
       const { airlineName, baggage, cabinBaggage } = req.body;
+
+      if (!airlineName || !baggage || !cabinBaggage) throw new CustomError(400, "Please provide airlineName, country, and city");
 
       const airline = await prisma.airline.findUnique({
         where: { id: Number(airlineId) },
