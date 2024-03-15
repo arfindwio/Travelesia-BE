@@ -90,8 +90,18 @@ model Airline {
   flight       Flight[]
 }
 
+model Promotion {
+  id        Int      @id @default(autoincrement())
+  discount  Decimal
+  startDate String
+  endDate   String
+  createdAt String
+  updatedAt String
+  flight    Flight[]
+}
+
 model Flight {
-  id                Int       @id @default(autoincrement())
+  id                Int        @id @default(autoincrement())
   flightCode        String
   flightImg         String
   seatClass         String
@@ -102,11 +112,13 @@ model Flight {
   createdAt         String
   updatedAt         String
   airlineId         Int
-  airline           Airline   @relation(fields: [airlineId], references: [id])
+  airline           Airline    @relation(fields: [airlineId], references: [id])
+  promotionId       Int?
+  promotion         Promotion? @relation(fields: [promotionId], references: [id])
   departureId       Int
-  departureTerminal Terminal  @relation("DepartureFlight", fields: [departureId], references: [id])
+  departureTerminal Terminal   @relation("DepartureFlight", fields: [departureId], references: [id])
   arrivalId         Int
-  arrivalTerminal   Terminal  @relation("ArrivalFlight", fields: [arrivalId], references: [id])
+  arrivalTerminal   Terminal   @relation("ArrivalFlight", fields: [arrivalId], references: [id])
   seat              Seat[]
   booking           Booking[]
 }

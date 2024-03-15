@@ -36,6 +36,10 @@
       "description": "Operations about Airline"
     },
     {
+      "name": "Promotions",
+      "description": "Operations about Promotion"
+    },
+    {
       "name": "Flights",
       "description": "Operations about Flight"
     },
@@ -46,6 +50,10 @@
     {
       "name": "Bookings",
       "description": "Operations about Booking"
+    },
+    {
+      "name": "Passengers",
+      "description": "Operations about Passenger"
     }
   ],
   "paths": {
@@ -3316,6 +3324,325 @@
         }
       }
     },
+    "/promotions": {
+      "get": {
+        "tags": ["Promotions"],
+        "operationId": "get-all-promotions",
+        "summary": "Get all promotions",
+        "description": "Get all promotions",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Used to specify a particular search when retrieving promotions data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Used to specify a particular page when retrieving promotions data",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Determines the limit of the number of promotions to be returned in a single request.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "pagination": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/Pagination"
+                                }
+                              ]
+                            },
+                            "promotios": {
+                              "type": "array",
+                              "items": {
+                                "allOf": [
+                                  {
+                                    "$ref": "#/components/schemas/PromotionModel"
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Promotions"],
+        "operationId": "create-promotion",
+        "summary": "Create promotion",
+        "description": "Create promotion",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreatePromotion"
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "newPromotion": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/PromotionModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/promotions/{promotionId}": {
+      "put": {
+        "tags": ["Promotions"],
+        "operationId": "edit-promotion-by-id",
+        "summary": "Edit promotion by id",
+        "description": "Edit promotion by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "promotionId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the promotion to retrieve."
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/EditPromotion"
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "editedPromotion": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/PromotionModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Promotions"],
+        "operationId": "delete-promotion-by-id",
+        "summary": "Delete promotion by id",
+        "description": "Delete promotion by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "promotionId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The ID of the promotion to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "deletedPromotion": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/PromotionModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/flights": {
       "get": {
         "tags": ["Flights"],
@@ -4216,14 +4543,12 @@
             }
           }
         }
-      }
-    },
-    "/bookings/{bookingCode}": {
+      },
       "put": {
         "tags": ["Bookings"],
-        "operationId": "pay-booking-by-bookingCode",
-        "summary": "pay booking by bookingCode",
-        "description": "pay booking by bookingCode",
+        "operationId": "pay-booking-by-flightId",
+        "summary": "pay booking by flightId",
+        "description": "pay booking by flightId",
         "security": [
           {
             "bearerAuth": []
@@ -4232,7 +4557,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "bookingCode",
+            "name": "flightId",
             "schema": {
               "type": "integer"
             },
@@ -4318,6 +4643,7 @@
         }
       }
     },
+
     "/bookings/bookingHistory": {
       "get": {
         "tags": ["Bookings"],
@@ -4327,6 +4653,16 @@
         "security": [
           {
             "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Used to specify a particular search when retrieving bookings data",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -4866,6 +5202,37 @@
           }
         }
       },
+      "PromotionModel": {
+        "title": "Promotion",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "discount": {
+            "type": "number",
+            "format": "float",
+            "example": 0.1
+          },
+          "startDate": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "endDate": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "15 Februari 2024"
+          }
+        }
+      },
       "FlightModel": {
         "title": "Flight",
         "type": "object",
@@ -4911,6 +5278,10 @@
             "example": "15 Februari 2024"
           },
           "airlineId": {
+            "type": "integer",
+            "example": 1
+          },
+          "promotionId": {
             "type": "integer",
             "example": 1
           },
@@ -5381,6 +5752,54 @@
           }
         }
       },
+      "CreatePromotion": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "discount": {
+                  "type": "number",
+                  "format": "float",
+                  "example": 0.1
+                },
+                "startDate": {
+                  "type": "string",
+                  "example": "15 Februari 2024"
+                },
+                "endDate": {
+                  "type": "string",
+                  "example": "15 Februari 2024"
+                }
+              }
+            }
+          }
+        }
+      },
+      "EditPromotion": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "discount": {
+                  "type": "number",
+                  "format": "float",
+                  "example": 0.1
+                },
+                "startDate": {
+                  "type": "string",
+                  "example": "15 Februari 2024"
+                },
+                "endDate": {
+                  "type": "string",
+                  "example": "15 Februari 2024"
+                }
+              }
+            }
+          }
+        }
+      },
       "CreateFlight": {
         "content": {
           "multipart/form-data": {
@@ -5412,6 +5831,10 @@
                   "example": "2024-03-15T01:40"
                 },
                 "airlineId": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "promotionId": {
                   "type": "integer",
                   "example": 1
                 },
@@ -5459,6 +5882,10 @@
                   "example": "2024-03-15T01:40"
                 },
                 "airlineId": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "promotionId": {
                   "type": "integer",
                   "example": 1
                 },
@@ -5527,6 +5954,10 @@
             "schema": {
               "type": "object",
               "properties": {
+                "bookingCode": {
+                  "type": "string",
+                  "example": "6723y2GHK"
+                },
                 "methodPayment": {
                   "type": "string",
                   "example": "Credit Card"

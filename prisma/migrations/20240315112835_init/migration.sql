@@ -83,6 +83,18 @@ CREATE TABLE "Airline" (
 );
 
 -- CreateTable
+CREATE TABLE "Promotion" (
+    "id" SERIAL NOT NULL,
+    "discount" DECIMAL(65,30) NOT NULL,
+    "startDate" TEXT NOT NULL,
+    "endDate" TEXT NOT NULL,
+    "createdAt" TEXT NOT NULL,
+    "updatedAt" TEXT NOT NULL,
+
+    CONSTRAINT "Promotion_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Flight" (
     "id" SERIAL NOT NULL,
     "flightCode" TEXT NOT NULL,
@@ -95,6 +107,7 @@ CREATE TABLE "Flight" (
     "createdAt" TEXT NOT NULL,
     "updatedAt" TEXT NOT NULL,
     "airlineId" INTEGER NOT NULL,
+    "promotionId" INTEGER,
     "departureId" INTEGER NOT NULL,
     "arrivalId" INTEGER NOT NULL,
 
@@ -172,6 +185,9 @@ ALTER TABLE "Terminal" ADD CONSTRAINT "Terminal_airportId_fkey" FOREIGN KEY ("ai
 
 -- AddForeignKey
 ALTER TABLE "Flight" ADD CONSTRAINT "Flight_airlineId_fkey" FOREIGN KEY ("airlineId") REFERENCES "Airline"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Flight" ADD CONSTRAINT "Flight_promotionId_fkey" FOREIGN KEY ("promotionId") REFERENCES "Promotion"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Flight" ADD CONSTRAINT "Flight_departureId_fkey" FOREIGN KEY ("departureId") REFERENCES "Terminal"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

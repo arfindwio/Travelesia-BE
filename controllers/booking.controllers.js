@@ -104,6 +104,8 @@ module.exports = {
       const { flightId } = req.params;
       const { adult, child, baby, amount } = req.body;
 
+      if (!adult || !child || !baby || !amount) throw new CustomError(400, "Please provide adult, child, baby, and amount");
+
       const flight = await prisma.flight.findUnique({
         where: { id: Number(flightId) },
       });
@@ -116,6 +118,7 @@ module.exports = {
           adult: parseInt(adult),
           child: parseInt(child),
           baby: parseInt(baby),
+          amount: parseInt(amount),
           userId: Number(req.user.id),
           flightId: Number(flightId),
           createdAt: formattedDate(new Date()),
@@ -134,14 +137,18 @@ module.exports = {
 
   payBooking: catchAsync(async (req, res, next) => {
     try {
-      const { bookingCode } = req.params;
-      const { methodPayment, cardNumber, cvv, expiryDate, bankName, store, message } = req.body;
+      const { flightId } = req.params;
+      const { bookingCode, methodPayment, cardNumber, cvv, expiryDate, bankName, store, message } = req.body;
 
-      const booking = await prisma.booking.findUnique({
-        where: { bookingCode },
+      const flight = await prisma.booking.findUnique({
+        where: { id: Number(flightId) },
       });
 
-      if (!booking) throw new CustomError(404, "booking Not Found");
+      const booking = await prisma.booking.findUnique({
+        where: { bookingCode, flightId: Number(flightId) },
+      });
+
+      if (!booking || !flight) throw new CustomError(404, "booking or flight Not Found");
 
       let month = expiryDate.slice(0, 2);
       let year = expiryDate.slice(3);
@@ -160,7 +167,7 @@ module.exports = {
       });
 
       let payBooking = await prisma.booking.update({
-        where: { bookingCode },
+        where: { id: booking.id, bookingCode, flightId: Number(flightId) },
         data: {
           status: "Paid",
           methodPayment,
@@ -296,8 +303,79 @@ module.exports = {
 
   getAllBookingsByAuth: catchAsync(async (req, res, next) => {
     try {
+      const { search } = req.query;
+
+      let bookingWhere = {
+        AND: [{ userId: Number(req.user.id) }],
+      };
+
+      if (search) {
+        bookingWhere.AND.push({
+          OR: [
+            { flight: { flightCode: { contains: search, mode: "insensitive" } } },
+            { flight: { departureTerminal: { airport: { city: { contains: search, mode: "insensitive" } } } } },
+            { flight: { arrivalTerminal: { airport: { city: { contains: search, mode: "insensitive" } } } } },
+          ],
+        });
+      }
+
       const bookings = await prisma.booking.findMany({
-        where: { userId: Number(req.user.id) },
+        where: bookingWhere,
+        select: {
+          id: true,
+          bookingCode: true,
+          adult: true,
+          child: true,
+          baby: true,
+          amount: true,
+          status: true,
+          flight: {
+            select: {
+              id: true,
+              flightCode: true,
+              seatClass: true,
+              price: true,
+              departureTime: true,
+              arrivalTime: true,
+              duration: true,
+              airline: {
+                select: {
+                  airlineName: true,
+                },
+              },
+              departureTerminal: {
+                select: {
+                  terminalName: true,
+                  airport: {
+                    select: {
+                      airportName: true,
+                      city: true,
+                    },
+                  },
+                },
+              },
+              arrivalTerminal: {
+                select: {
+                  terminalName: true,
+                  airport: {
+                    select: {
+                      airportName: true,
+                      city: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          passenger: {
+            select: {
+              id: true,
+              title: true,
+              fullName: true,
+              familyName: true,
+            },
+          },
+        },
       });
 
       res.status(200).json({
