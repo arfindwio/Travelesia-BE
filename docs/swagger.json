@@ -5834,6 +5834,10 @@
                   "type": "integer",
                   "example": 1
                 },
+                "promotionId": {
+                  "type": "integer",
+                  "example": 1
+                },
                 "departureId": {
                   "type": "integer",
                   "example": 1
@@ -5878,6 +5882,10 @@
                   "example": "2024-03-15T01:40"
                 },
                 "airlineId": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "promotionId": {
                   "type": "integer",
                   "example": 1
                 },

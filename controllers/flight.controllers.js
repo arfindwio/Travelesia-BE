@@ -112,12 +112,15 @@ module.exports = {
 
   createFlight: catchAsync(async (req, res, next) => {
     try {
-      const { flightCode, seatClass, price, departureTime, arrivalTime, airlineId, departureId, arrivalId } = req.body;
+      const { flightCode, seatClass, price, departureTime, arrivalTime, airlineId, promotionId, departureId, arrivalId } = req.body;
       const file = req.file;
       let imageURL;
+      let finalPrice = price;
 
       if (!flightCode || !file || !seatClass || !price || !departureTime || !arrivalTime || !airlineId || !departureId || !arrivalId)
         throw new CustomError(400, "Please provide flightCode, flightImg, seatClass, price, departureTime, arrivalTime, airlineId, departureId, and arrivalId");
+
+      if (promotionId === "null") throw new CustomError(400, "promotionId cannot be null");
 
       let airline = await prisma.airline.findUnique({
         where: { id: Number(airlineId) },
@@ -143,6 +146,16 @@ module.exports = {
       const arrivalDateTime = convertDateTime(arrivalTime);
       const durationFlight = calculateDurationDateTime(departureDateTime, arrivalDateTime);
 
+      if (promotionId) {
+        const promotion = await prisma.promotion.findUnique({
+          where: { id: Number(promotionId) },
+        });
+
+        if (!promotion) throw new CustomError(404, "Promotion not found");
+
+        finalPrice = price - promotion.discount * price;
+      }
+
       if (file) {
         const strFile = file.buffer.toString("base64");
 
@@ -158,11 +171,12 @@ module.exports = {
         data: {
           ...req.body,
           flightImg: imageURL,
-          price: parseInt(price),
+          price: parseInt(finalPrice),
           departureTime: departureDateTime,
           arrivalTime: arrivalDateTime,
           duration: parseInt(durationFlight),
           airlineId: Number(airlineId),
+          promotionId: promotionId ? Number(promotionId) : null,
           departureId: Number(departureId),
           arrivalId: Number(arrivalId),
           createdAt: formattedDate(new Date()),
@@ -170,7 +184,7 @@ module.exports = {
         },
       });
 
-      return res.status(201).json({
+      res.status(201).json({
         status: true,
         message: "create flight successful",
         data: { newFlight },
@@ -198,6 +212,13 @@ module.exports = {
               airlineName: true,
               baggage: true,
               cabinBaggage: true,
+            },
+          },
+          promotion: {
+            select: {
+              discount: true,
+              startDate: true,
+              endDate: true,
             },
           },
           departureTerminal: {
@@ -242,15 +263,21 @@ module.exports = {
     }
   }),
 
-  editFlight: catchAsync(async (req, res, next) => {
+  editFlightById: catchAsync(async (req, res, next) => {
     try {
       const { flightId } = req.params;
-      let { flightCode, seatClass, price, departureTime, arrivalTime, airlineId, departureId, arrivalId } = req.body;
+      let { flightCode, seatClass, price, departureTime, arrivalTime, airlineId, promotionId, departureId, arrivalId } = req.body;
       const file = req.file;
       let imageURL;
       let durationFlight;
       let departureDateTime;
       let arrivalDateTime;
+      let finalPrice = price;
+
+      if (!flightCode || !seatClass || !price || !departureTime || !arrivalTime || !airlineId || !departureId || !arrivalId)
+        throw new CustomError(400, "Please provide flightCode, seatClass, price, departureTime, arrivalTime, airlineId, departureId, and arrivalId");
+
+      if (promotionId === "null") throw new CustomError(400, "promotionId cannot be null");
 
       const flight = await prisma.flight.findUnique({
         where: { id: Number(flightId) },
@@ -294,6 +321,16 @@ module.exports = {
         }
       }
 
+      if (promotionId) {
+        const promotion = await prisma.promotion.findUnique({
+          where: { id: Number(promotionId) },
+        });
+
+        if (!promotion) throw new CustomError(404, "Promotion not found");
+
+        finalPrice = price - promotion.discount * price;
+      }
+
       if (file) {
         const strFile = file.buffer.toString("base64");
 
@@ -311,11 +348,12 @@ module.exports = {
           flightCode,
           flightImg: imageURL,
           seatClass,
-          price: parseInt(price),
+          price: parseInt(finalPrice),
           departureTime: departureDateTime,
           arrivalTime: arrivalDateTime,
           duration: durationFlight,
           airlineId: Number(airlineId),
+          promotionId: promotionId ? Number(promotionId) : null,
           departureId: Number(departureId),
           arrivalId: Number(arrivalId),
           updatedAt: formattedDate(new Date()),

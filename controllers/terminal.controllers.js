@@ -62,10 +62,12 @@ module.exports = {
     }
   }),
 
-  editTerminal: catchAsync(async (req, res, next) => {
+  editTerminalById: catchAsync(async (req, res, next) => {
     try {
       const { terminalId } = req.params;
       const { terminalName, airportId } = req.body;
+
+      if (!terminalName || !airportId) throw new CustomError(400, "Please provide terminalName and airportId");
 
       const terminal = await prisma.terminal.findUnique({
         where: { id: Number(terminalId) },
