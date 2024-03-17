@@ -3,8 +3,7 @@ const prisma = require("../libs/prismaClient");
 
 module.exports = {
   promotionCheck: () => {
-    // cron.schedule("0 0 * * *", async function () {
-    cron.schedule("* * * * *", async function () {
+    cron.schedule("0 0 * * *", async function () {
       const flights = await prisma.flight.findMany();
       const promotions = await prisma.promotion.findMany();
       const validPromotionIds = flights.map((data) => data.promotionId).filter((promotionId) => promotionId !== null);
