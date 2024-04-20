@@ -436,11 +436,7 @@ module.exports = {
       expiresIn: "6h",
     });
 
-    const cookieOptions = {
-      secure: true,
-    };
-
-    res.cookie("authToken", token, cookieOptions).redirect(FRONTEND_URL);
+    res.redirect(`${FRONTEND_URL}?googleToken=${token}`);
   },
 
   getAllUsers: catchAsync(async (req, res, next) => {

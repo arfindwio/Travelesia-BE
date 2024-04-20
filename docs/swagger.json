@@ -4176,6 +4176,9 @@
             "description": "The ID of the seat to retrieve."
           }
         ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/ReserveSeat"
+        },
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -4465,6 +4468,83 @@
         }
       }
     },
+    "/bookings/{bookingCode}": {
+      "get": {
+        "tags": ["Bookings"],
+        "operationId": "get-booking-by-bookingCode",
+        "summary": "get booking by bookingCode",
+        "description": "get booking by bookingCode",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bookingCode",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "The Code of the booking to retrieve."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/BasicResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "newBooking": {
+                              "allOf": [
+                                {
+                                  "$ref": "#/components/schemas/BookingModel"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "failed"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/bookings/{flightId}": {
       "post": {
         "tags": ["Bookings"],
@@ -4643,8 +4723,7 @@
         }
       }
     },
-
-    "/bookings/bookingHistory": {
+    "/bookings/payment/history": {
       "get": {
         "tags": ["Bookings"],
         "operationId": "get-all-bookings-by-auth",
@@ -5913,6 +5992,21 @@
                   "example": 12
                 },
                 "flightId": {
+                  "type": "integer",
+                  "example": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "ReserveSeat": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "bookingId": {
                   "type": "integer",
                   "example": 1
                 }

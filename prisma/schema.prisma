@@ -124,13 +124,15 @@ model Flight {
 }
 
 model Seat {
-  id         Int     @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   seatNumber String
-  isBooked   Boolean @default(false)
+  isBooked   Boolean  @default(false)
   createdAt  String
   updatedAt  String
   flightId   Int
-  flight     Flight  @relation(fields: [flightId], references: [id])
+  flight     Flight   @relation(fields: [flightId], references: [id])
+  bookingId  Int?
+  booking    Booking? @relation(fields: [bookingId], references: [id])
 }
 
 model Booking {
@@ -149,6 +151,7 @@ model Booking {
   flightId      Int
   flight        Flight      @relation(fields: [flightId], references: [id])
   passenger     Passenger[]
+  seat          Seat[]
 }
 
 model Passenger {

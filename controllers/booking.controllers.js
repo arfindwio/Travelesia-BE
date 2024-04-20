@@ -99,12 +99,95 @@ module.exports = {
     }
   }),
 
+  getBookingByBookingCode: catchAsync(async (req, res, next) => {
+    try {
+      const { bookingCode } = req.params;
+
+      const booking = await prisma.booking.findUnique({
+        where: { bookingCode: bookingCode, userId: Number(req.user.id) },
+        select: {
+          id: true,
+          bookingCode: true,
+          adult: true,
+          child: true,
+          baby: true,
+          amount: true,
+          status: true,
+          flight: {
+            select: {
+              flightCode: true,
+              seatClass: true,
+              price: true,
+              departureTime: true,
+              arrivalTime: true,
+              duration: true,
+              promotion: {
+                select: {
+                  discount: true,
+                },
+              },
+              airline: {
+                select: {
+                  airlineName: true,
+                  baggage: true,
+                  cabinBaggage: true,
+                },
+              },
+              departureTerminal: {
+                select: {
+                  terminalName: true,
+                  airport: {
+                    select: {
+                      airportName: true,
+                      city: true,
+                    },
+                  },
+                },
+              },
+              arrivalTerminal: {
+                select: {
+                  terminalName: true,
+                  airport: {
+                    select: {
+                      airportName: true,
+                      city: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          passenger: {
+            select: {
+              id: true,
+              title: true,
+              fullName: true,
+              familyName: true,
+            },
+          },
+        },
+      });
+
+      if (!booking) throw new CustomError(404, "booking Not Found");
+
+      res.status(200).json({
+        status: true,
+        message: "show booking by code successful",
+        data: { booking },
+      });
+    } catch (err) {
+      next(err);
+    }
+  }),
+
   createBooking: catchAsync(async (req, res, next) => {
     try {
       const { flightId } = req.params;
       const { adult, child, baby, amount } = req.body;
 
-      if (!adult || !child || !baby || !amount) throw new CustomError(400, "Please provide adult, child, baby, and amount");
+      if (typeof adult !== "number" || typeof child !== "number" || typeof baby !== "number" || typeof amount !== "number") throw new CustomError(400, "Invalid input type. Adult, child, baby, and amount must be numbers");
+
+      if (adult < 0 || child < 0 || baby < 0 || amount < 0) throw new CustomError(400, "Invalid input value. Adult, child, baby, and amount must be non-negative numbers");
 
       const flight = await prisma.flight.findUnique({
         where: { id: Number(flightId) },
@@ -125,6 +208,7 @@ module.exports = {
           updatedAt: formattedDate(new Date()),
         },
       });
+
       res.status(201).json({
         status: true,
         message: "create booking successful",
@@ -140,7 +224,7 @@ module.exports = {
       const { flightId } = req.params;
       const { bookingCode, methodPayment, cardNumber, cvv, expiryDate, bankName, store, message } = req.body;
 
-      const flight = await prisma.booking.findUnique({
+      const flight = await prisma.flight.findUnique({
         where: { id: Number(flightId) },
       });
 
@@ -321,6 +405,7 @@ module.exports = {
 
       const bookings = await prisma.booking.findMany({
         where: bookingWhere,
+        orderBy: { createdAt: "desc" },
         select: {
           id: true,
           bookingCode: true,
@@ -329,6 +414,7 @@ module.exports = {
           baby: true,
           amount: true,
           status: true,
+          createdAt: true,
           flight: {
             select: {
               id: true,
@@ -341,6 +427,8 @@ module.exports = {
               airline: {
                 select: {
                   airlineName: true,
+                  baggage: true,
+                  cabinBaggage: true,
                 },
               },
               departureTerminal: {

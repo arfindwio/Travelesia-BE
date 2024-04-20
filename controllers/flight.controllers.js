@@ -11,37 +11,56 @@ const { calculateDurationDateTime } = require("../utils/calculateDuration");
 module.exports = {
   getAllFlights: catchAsync(async (req, res, next) => {
     try {
+      // filter
+      // search=search, d=departure, a=arrival, s=seat, c=continent, f=date, w=allFilter: cheapest, duration, earliest, latest
       const { search, d, a, s, c, f, w, page = 1, limit = 10 } = req.query;
 
-      const flightsQuery = {
+      let flightsQuery = {
         where: {},
       };
 
       if (search || d || a || s || c || f) {
-        if ((search && (d || a || s)) || (d && (search || a || s)) || (a && (d || search || s)) || (s && (d || a || search))) {
+        if ((search && (d || a || s || f)) || (d && (search || a || s || f)) || (a && (d || search || s || f)) || (s && (d || a || search || f)) || (f && (search || d || a || s || c))) {
           flightsQuery.where.AND = [];
-          if (search) flightsQuery.where.AND.push({ flightCode: { contains: search, mode: "insensitive" } });
+          if (search)
+            flightsQuery.where.AND.push({
+              OR: [
+                { departureTerminal: { airport: { city: { contains: search, mode: "insensitive" } } } },
+                { arrivalTerminal: { airport: { city: { contains: search, mode: "insensitive" } } } },
+                { flightCode: { contains: search, mode: "insensitive" } },
+              ],
+            });
           if (d) flightsQuery.where.AND.push({ departureTerminal: { airport: { city: { contains: d, mode: "insensitive" } } } });
           if (a) flightsQuery.where.AND.push({ arrivalTerminal: { airport: { city: { contains: a, mode: "insensitive" } } } });
           if (s) flightsQuery.where.AND.push({ seatClass: { contains: s, mode: "insensitive" } });
+          if (f)
+            flightsQuery.where.AND.push({
+              OR: [{ departureTime: { contains: f, mode: "insensitive" } }, { arrivalTime: { contains: f, mode: "insensitive" } }],
+            });
         } else {
           flightsQuery.where.OR = [];
-          flightsQuery.orderBy = {};
-          if (search) flightsQuery.where.OR.push({ flightCode: { contains: search, mode: "insensitive" } });
+          if (search)
+            flightsQuery.where.OR.push(
+              { departureTerminal: { airport: { city: { contains: search, mode: "insensitive" } } } },
+              { arrivalTerminal: { airport: { city: { contains: search, mode: "insensitive" } } } },
+              { flightCode: { contains: search, mode: "insensitive" } }
+            );
           if (d) flightsQuery.where.OR.push({ departureTerminal: { airport: { city: { contains: d, mode: "insensitive" } } } });
           if (a) flightsQuery.where.OR.push({ arrivalTerminal: { airport: { city: { contains: a, mode: "insensitive" } } } });
           if (s) flightsQuery.where.OR.push({ seatClass: { contains: s, mode: "insensitive" } });
           if (c) flightsQuery.where.OR.push({ departureTerminal: { airport: { continent: { contains: c, mode: "insensitive" } } } }, { arrivalTerminal: { airport: { continent: { contains: c, mode: "insensitive" } } } });
           if (f) flightsQuery.where.OR.push({ departureTime: { contains: f, mode: "insensitive" } }, { arrivalTime: { contains: f, mode: "insensitive" } });
-          if (w) {
-            if (w === "cheapest") flightsQuery.orderBy.price = "asc";
-            if (w === "duration") flightsQuery.orderBy.duration = "asc";
-            if (w === "earliest departure") flightsQuery.orderBy.departureTime = "asc";
-            if (w === "latest departure") flightsQuery.orderBy.departureTime = "desc";
-            if (w === "earliest arrival") flightsQuery.orderBy.arrivalTime = "asc";
-            if (w === "latest arrival") flightsQuery.orderBy.arrivalTime = "desc";
-          }
         }
+      }
+
+      if (w) {
+        flightsQuery.orderBy = {};
+        if (w === "cheapest") flightsQuery.orderBy.price = "asc";
+        if (w === "duration") flightsQuery.orderBy.duration = "asc";
+        if (w === "earliest departure") flightsQuery.orderBy.departureTime = "asc";
+        if (w === "latest departure") flightsQuery.orderBy.departureTime = "desc";
+        if (w === "earliest arrival") flightsQuery.orderBy.arrivalTime = "asc";
+        if (w === "latest arrival") flightsQuery.orderBy.arrivalTime = "desc";
       }
 
       const flights = await prisma.flight.findMany({
