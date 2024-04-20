@@ -122,6 +122,7 @@ CREATE TABLE "Seat" (
     "createdAt" TEXT NOT NULL,
     "updatedAt" TEXT NOT NULL,
     "flightId" INTEGER NOT NULL,
+    "bookingId" INTEGER NOT NULL,
 
     CONSTRAINT "Seat_pkey" PRIMARY KEY ("id")
 );
@@ -197,6 +198,9 @@ ALTER TABLE "Flight" ADD CONSTRAINT "Flight_arrivalId_fkey" FOREIGN KEY ("arriva
 
 -- AddForeignKey
 ALTER TABLE "Seat" ADD CONSTRAINT "Seat_flightId_fkey" FOREIGN KEY ("flightId") REFERENCES "Flight"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Seat" ADD CONSTRAINT "Seat_bookingId_fkey" FOREIGN KEY ("bookingId") REFERENCES "Booking"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Booking" ADD CONSTRAINT "Booking_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

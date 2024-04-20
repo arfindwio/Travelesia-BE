@@ -10,11 +10,11 @@ module.exports = {
 
       if (!totalRows || !flightId) throw new CustomError(400, "Please provide totalRows and flightId");
 
-      let airport = await prisma.airport.findUnique({
+      let flight = await prisma.flight.findUnique({
         where: { id: Number(flightId) },
       });
 
-      if (!airport) throw new CustomError(404, "Airport Not Found");
+      if (!flight) throw new CustomError(404, "Flight Not Found");
 
       let seatData = [];
 
@@ -53,6 +53,7 @@ module.exports = {
 
       const seats = await prisma.seat.findMany({
         where: { flightId: Number(flightId) },
+        orderBy: { id: "asc" },
       });
 
       if (!seats.length) throw new CustomError(404, "seats Not Found");
@@ -70,6 +71,7 @@ module.exports = {
   reserveSeatById: catchAsync(async (req, res, next) => {
     try {
       const { seatId } = req.params;
+      const { bookingId } = req.body;
 
       const seat = await prisma.seat.findUnique({
         where: { id: Number(seatId) },
@@ -77,12 +79,19 @@ module.exports = {
 
       if (!seat) throw new CustomError(404, "seat Not Found");
 
+      const booking = await prisma.booking.findUnique({
+        where: { id: Number(bookingId) },
+      });
+
+      if (!booking) throw new CustomError(404, "booking Not Found");
+
       let editedSeat = await prisma.seat.update({
         where: {
           id: Number(seatId),
         },
         data: {
           isBooked: true,
+          bookingId: Number(booking.id),
           updatedAt: formattedDate(new Date()),
         },
       });
